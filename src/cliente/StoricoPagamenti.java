@@ -1,0 +1,57 @@
+package cliente;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import database.DBMS;
+import model.Account;
+import model.Utente;
+
+
+/**
+ * Questa servlet intercetta le richieste relative alla pagina dello storico dei pagamenti.
+ * @author Marco La Martina
+ */
+@WebServlet({ "/StoricoPagamenti", "/storicopagamenti"})
+public class StoricoPagamenti extends ClienteHome {
+	private static final long serialVersionUID = 1L;
+       
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if(checkSession(request, response)) {
+			String address = "/WEB-INF/cliente/storicoPagamenti.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+			dispatcher.forward(request, response);
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if(checkSession(request, response)) {	
+			try {
+				Account account=(Account)request.getSession().getAttribute("account");
+				Utente utente=account.getUtente();
+				int id = utente.getIdUtente();
+				response.setContentType("application/json");
+				response.getWriter().println(DBMS.getPagamenti(id, true));	
+				
+			} catch(Exception e) {
+				e.printStackTrace();
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+		}	
+	}
+
+}
