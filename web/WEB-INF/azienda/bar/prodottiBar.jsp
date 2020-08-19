@@ -8,7 +8,7 @@ response.setDateHeader ("Expires", 0); %>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gorgo Beach</title>
+<title>Conferma ordinazione</title>
 <link rel="icon" href="img/logo.jpg" type="image/jpg" />
 
 <!-- CSS only -->
@@ -20,43 +20,48 @@ response.setDateHeader ("Expires", 0); %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
-<script src="js/azienda/cucina-bar/cucinaBarHome.js"></script>
+<script src="js/azienda/bar/prodottiBar.js"></script>
 
+<style>
+	.line-through { text-decoration:line-through; }
+</style>
 
 </head>
 <body>
 <%@ include file="/WEB-INF/utils/header.jsp"%>
 <div class="container">
 	
+	
 	<div class="jumbotron">
-		<h1>Ciao ${account.utente.nome}!</h1>
-		<p>Da questa sezione potrai vedere gli ordini dei clienti, ordinare per loro, togliere dal menu i prodotti di cui non ci sono gli ingredienti in cucina</p>
+		<h1>Ingredienti</h1>
+		<p>Puoi rimuovere e ripristinare dal menu i prodotti non presenti in cucina o al bar o di cui non sono disponibili tutti gli ingredienti</p>
 	</div>
+
+    <!-- Pannello "Buttons" -->
+    <div>
+        <a href="BarHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
+        <a href="OrdineBar" ><button type="submit" class="btn btn-primary" name="commit">Ordina</button></a>
+        <a href="CheckoutBar" ><button type="submit" class="btn btn-primary" name="commit">Check-out</button></a>
+        <a href="ProdottiBar" ><button type="submit" class="btn btn-primary" name="commit">Prodotti</button></a>
+        <br />
+        <br />
+    </div>
 	
-	
-	<!-- Pannello "Buttons" -->
+	<!-- Pannello "ProdottiBar" -->
        <div>
-       		<a href="CucinaBarHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
-       		<a href="OrdineCucinaBar" ><button type="submit" class="btn btn-primary" name="commit">Ordina</button></a>
-       		<a href="CheckoutCucinaBar" ><button type="submit" class="btn btn-primary" name="commit">Check-out</button></a>
-       		<a href="Prodotti" ><button type="submit" class="btn btn-primary" name="commit">Prodotti</button></a>
-            <br />
-            <br />
-		</div>
-	
-	<!-- Pannello "Ordini" -->
-       <div>
-       		<h2 id="ordiniVuoti" style="display:none">Non ci sono ordinazioni</h2>
+            <label for="selCategoria">Categoria: </label>
+            <select class="form-control" id="selCategoria" name="categoria"></select>
             <br />
             <input class="form-control" id="search" type="text" placeholder="Cerca..">
-            <br />
-            <div id="ordini">
-            </div>
-		</div>
-	
-	
-  	
- 		
+        </div>
+        <br />
+        <br />
+        <div id="menu">
+        	
+        </div>  
+            
+            
+     
 	
 </div>
 	

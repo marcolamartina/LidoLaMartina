@@ -115,8 +115,7 @@ function mostraConti(data) {
         		+ '<br /></div>'
 			    + '</div>'
 			    + '</div>';
-			    
-			    
+
 			$("#accordionConto"+idutente).append(accordionConto);
 			printTable(id, bar, spiaggia, idutente);
 		}

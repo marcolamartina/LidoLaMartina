@@ -1,4 +1,4 @@
-package azienda.cucinaBar;
+package azienda.cucina;
 
 import java.io.IOException;
 
@@ -21,8 +21,8 @@ import model.Comande;
  * Questa servlet intercetta le richieste relative alla pagina di home dei dipendenti della cucina o del bar.
  * @author Marco La Martina
  */
-@WebServlet({ "/CucinaBarHome", "/cucinabarhome"})
-public class CucinaBarHome extends HttpServlet {
+@WebServlet({ "/CucinaHome", "/cucinahome"})
+public class CucinaHome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
@@ -33,7 +33,7 @@ public class CucinaBarHome extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(checkSession(request, response)) {
 			
-			String address = "/WEB-INF/azienda/cucina-bar/cucinaBarHome.jsp";
+			String address = "/WEB-INF/azienda/cucina/cucinaHome.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(address);
 			dispatcher.forward(request, response);
 		}
@@ -57,7 +57,7 @@ public class CucinaBarHome extends HttpServlet {
 	protected boolean checkSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getSession().getAttribute("account") != null ) {
 			Account account=(Account)request.getSession().getAttribute("account");
-			if(account.getRuoli().containsKey("Cucina-Bar")) {
+			if(account.getRuoli().containsKey("Cucina")) {
 				if(request.getSession().getAttribute("comande")==null) {
 					request.getSession().setAttribute("comande", new Comande());
 				}

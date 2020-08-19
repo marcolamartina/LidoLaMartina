@@ -45,7 +45,8 @@ response.setDateHeader ("Expires", 0); %>
 	      			<tbody>
 	      				<tr><td>Bag</td><td>=</td><td>Bagnino</td></tr>
 	      				<tr><td>Cas</td><td>=</td><td>Cassa</td></tr>
-	      				<tr><td>CB</td><td>=</td><td>Cucina-Bar</td></tr>
+	      				<tr><td>Cuc</td><td>=</td><td>Cucina</td></tr>
+						<tr><td>Bar</td><td>=</td><td>Bar</td></tr>
 	      				<tr><td>Rec</td><td>=</td><td>Reception</td></tr>
 	      				<tr><td>Cam</td><td>=</td><td>Cameriere</td></tr>
 	      				
@@ -66,7 +67,8 @@ response.setDateHeader ("Expires", 0); %>
 		          			<th>Nome</th>
 		          			<th>Bag</th>
 		          			<th>Cas</th>
-		          			<th>CB</th>
+		          			<th>Cuc</th>
+							<th>Bar</th>
 		          			<th>Rec</th>
 		          			<th>Cam</th>
 	        			</tr>

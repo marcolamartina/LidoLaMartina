@@ -2,15 +2,16 @@ $(document).ready(function() {
 	$("#date").change(aggiornaIncassi);
 	var date=new Date();
 	var string_date=date.getFullYear()+'-';
-	if(date.getMonth()<10){
+	if(date.getMonth()<9){
 		string_date+='0';
 	}
-	string_date+=date.getMonth()+'-';
+	string_date+=date.getMonth()+1+'-';
 	if(date.getDate()<10){
 		string_date+='0';
 	}
 	string_date+=date.getDate();
 	$("#date").val(string_date);
+	$('[type="date"]').prop('max', string_date);
 	aggiornaIncassi();
 });
 

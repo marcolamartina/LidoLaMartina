@@ -18,6 +18,7 @@ $(document).ready(function() {
 function richiediOrdini() {
 	$.ajax({
 		url: "RichiediOrdini",
+		data: {ruolo: "cucina"},
 		method: "post",
 		success: function(data) {
 			mostraOrdini(data);

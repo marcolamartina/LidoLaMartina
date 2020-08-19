@@ -55,7 +55,7 @@ label { display: inline }
 							<a class="nav-link" href="#" data-toggle="dropdown"><i class="fa fa-cog"></i> Ruolo</a>
 								<div class="dropdown-menu">
 							<% for(String i: account.getRuoli().keySet() ){ %>
-								<a class="dropdown-item" href="<%=i.replace("-", "")+"Home"%>"><%=i%></a>
+								<a class="dropdown-item" href="<%=i+"Home"%>"><%=i%></a>
 							<% } %>
 								</div>
 							</li>

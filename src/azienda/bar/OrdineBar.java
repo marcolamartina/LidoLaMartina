@@ -1,6 +1,9 @@
-package azienda.cucinaBar;
+package azienda.bar;
 
-import java.io.IOException;
+import database.DBMS;
+import model.Carrello;
+import model.Comande;
+import model.Prodotto;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,20 +11,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import database.DBMS;
-import model.Carrello;
-import model.Comande;
-import model.Prodotto;
-
+import java.io.IOException;
 
 
 /**
  * Questa servlet intercetta le richieste relative alla pagina che consente ad un cameriere di prendere le ordinazioni per un cliente.
  * @author Marco La Martina
  */
-@WebServlet({ "/OrdineCucinaBar", "/ordinecucinabar"})
-public class OrdineCucinaBar extends CucinaBarHome {
+@WebServlet({ "/OrdineBar", "/ordinebar"})
+public class OrdineBar extends BarHome {
 	private static final long serialVersionUID = 1L;
        
 
@@ -30,7 +28,7 @@ public class OrdineCucinaBar extends CucinaBarHome {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		if(checkSession(request, response)) {	
-			String address = "/WEB-INF/azienda/cucina-bar/ordineCucinaBar.jsp";
+			String address = "/WEB-INF/azienda/bar/ordineBar.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(address);
 			dispatcher.forward(request, response);
 		}	

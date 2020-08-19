@@ -32,16 +32,16 @@ response.setDateHeader ("Expires", 0); %>
 		<h1>Prendi le ordinazioni</h1>
 		<p>Da questa sezione potrai prendere le ordinazioni per i clienti</p>
 	</div>
-	
+
 	<!-- Pannello "Buttons" -->
-       <div>
-       		<a href="CucinaBarHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
-       		<a href="OrdineCucinaBar" ><button type="submit" class="btn btn-primary" name="commit">Ordina</button></a>
-       		<a href="CheckoutCucinaBar" ><button type="submit" class="btn btn-primary" name="commit">Check-out</button></a>
-       		<a href="Prodotti" ><button type="submit" class="btn btn-primary" name="commit">Prodotti</button></a>
-            <br />
-            <br />
-		</div>
+	<div>
+		<a href="BarHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
+		<a href="OrdineBar" ><button type="submit" class="btn btn-primary" name="commit">Ordina</button></a>
+		<a href="CheckoutBar" ><button type="submit" class="btn btn-primary" name="commit">Check-out</button></a>
+		<a href="ProdottiBar" ><button type="submit" class="btn btn-primary" name="commit">Prodotti</button></a>
+		<br />
+		<br />
+	</div>
 	
 	<!-- Contenitore del form di ricerca account -->
 		<div>

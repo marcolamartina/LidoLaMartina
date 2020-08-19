@@ -78,10 +78,11 @@ function mostraAccount(data){
 		if($("#info" + utente.idutente).length == 0){
 			var checkbox_bagnino='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkBagnino'+utente.idutente+'" name="Bagnino" value="'+utente.idutente+'"></div></td>';
 			var checkbox_cassa='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkCassa'+utente.idutente+'" name="Cassa" value="'+utente.idutente+'"></div></td>';
-			var checkbox_cucinabar='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkCucina-Bar'+utente.idutente+'" name="Cucina-Bar" value="'+utente.idutente+'"></div></td>';
+			var checkbox_cucina='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkCucina'+utente.idutente+'" name="Cucina" value="'+utente.idutente+'"></div></td>';
+			var checkbox_bar='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkBar'+utente.idutente+'" name="Bar" value="'+utente.idutente+'"></div></td>';
 			var checkbox_reception='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkReception'+utente.idutente+'" name="Reception" value="'+utente.idutente+'"></div></td>';
 			var checkbox_cameriere='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkCameriere'+utente.idutente+'" name="Cameriere" value="'+utente.idutente+'"></div></td>';
-			var content='<tr id="row'+utente.idutente+'"><td><button id="info'+utente.idutente+'" class="btn btn-link" onclick=\'getInfo("'+utente.idutente+'","'+utente.nome+'","'+utente.cognome+'","'+utente.email+'","'+utente.cellulare+'")\'>'+utente.nome+' '+utente.cognome+'</td>'+checkbox_bagnino+checkbox_cassa+checkbox_cucinabar+checkbox_reception+checkbox_cameriere+'</tr>';
+			var content='<tr id="row'+utente.idutente+'"><td><button id="info'+utente.idutente+'" class="btn btn-link" onclick=\'getInfo("'+utente.idutente+'","'+utente.nome+'","'+utente.cognome+'","'+utente.email+'","'+utente.cellulare+'")\'>'+utente.nome+' '+utente.cognome+'</td>'+checkbox_bagnino+checkbox_cassa+checkbox_cucina+checkbox_bar+checkbox_reception+checkbox_cameriere+'</tr>';
 			$("#tablebody").append(content);
 		}
 	}

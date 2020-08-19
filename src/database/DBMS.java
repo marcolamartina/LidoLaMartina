@@ -94,11 +94,8 @@ public class DBMS {
 	}
 	
 	/**
-	 * Inserisce all'interno del database i dati del cliente che effettua la registrazione 
-	 * @param nome
-	 * @param cognome
+	 * Ritorna l'IDUtente a partire dall'indirizzo email
 	 * @param email
-	 * @param password
 	 */
 	public static int getIDUtente(String email) throws SQLException{
 		String query1 = "SELECT IDUtente FROM Utente WHERE Email=?";
@@ -238,7 +235,7 @@ public class DBMS {
 	
 	/**
 	 * Ritorna i dati dell'utente tramite l'ID di un conto a lui associato
-	 * @param IDUtente
+	 * @param IDConto
 	 */
 	public static Utente getUtenteFromConto(int IDConto) throws SQLException{
 		Utente utente=null;
@@ -257,7 +254,7 @@ public class DBMS {
 	
 	/**
 	 * Ritorna i dati dell'utente tramite il suo indirizzo email
-	 * @param IDUtente
+	 * @param email
 	 */
 	public static Utente getUtente(String email) throws SQLException{
 		Utente utente=null;
@@ -351,12 +348,13 @@ public class DBMS {
 		closeConnection();
 		return flag;
 	}
-	
+
 	/**
 	 * Reimposta la password dell'utente
 	 * @param IDUtente
 	 * @param password
-	 * @param token
+	 * @param tokenResetPassword
+	 * @throws SQLException
 	 */
 	public static int reimpostaPassword(int IDUtente, String password, int tokenResetPassword) throws SQLException{
 		String query1 = "UPDATE Utente SET Password=MD5(?) WHERE IDUtente=? AND TokenResetPassword=?";
@@ -392,21 +390,38 @@ public class DBMS {
 		return categorie;
 			
 	}
-	
+
+
 	/**
-	 * Ritorna il JSONArray contenente le categorie dei prodotti
+	 * Ritorna il JSONArray contenente le categorie dei prodotti del bar
 	 * @return categorie
 	 */
-	public static JSONArray getAllCategorie() throws SQLException{
+	public static JSONArray getAllCategorieBar() throws SQLException{
 		JSONArray categorie=null;
-		String query = "SELECT DISTINCT Categoria FROM Prodotto";
+		String query = "SELECT DISTINCT Categoria FROM Prodotto WHERE Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
 		startConnection();
 		statement = connection.prepareStatement(query);
 		result = statement.executeQuery();
 		categorie = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
+		closeConnection();
 		return categorie;
-			
+
+	}
+
+	/**
+	 * Ritorna il JSONArray contenente le categorie dei prodotti della cucina
+	 * @return categorie
+	 */
+	public static JSONArray getAllCategorieCucina() throws SQLException{
+		JSONArray categorie=null;
+		String query = "SELECT DISTINCT Categoria FROM Prodotto WHERE Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		result = statement.executeQuery();
+		categorie = JSONConverter.convertToJSONArray(result);
+		closeConnection();
+		return categorie;
+
 	}
 	
 	/**
@@ -444,12 +459,12 @@ public class DBMS {
 	}
 	
 	/**
-	 * Ritorna il JSONArray contenente tutti i prodotti 
+	 * Ritorna il JSONArray contenente tutti i prodotti del bar
 	 * @return prodotti
 	 */
-	public static JSONArray getAllProdotti() throws SQLException{
+	public static JSONArray getAllProdottiBar() throws SQLException{
 		JSONArray prodotti=null;
-		String query = "SELECT * FROM Prodotto";
+		String query = "SELECT * FROM Prodotto WHERE Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
 		startConnection();
 		statement = connection.prepareStatement(query);
 		result = statement.executeQuery();
@@ -457,6 +472,22 @@ public class DBMS {
 		closeConnection(); 
 		return prodotti;
 			
+	}
+
+	/**
+	 * Ritorna il JSONArray contenente tutti i prodotti della cucina
+	 * @return prodotti
+	 */
+	public static JSONArray getAllProdottiCucina() throws SQLException{
+		JSONArray prodotti=null;
+		String query = "SELECT * FROM Prodotto WHERE Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		result = statement.executeQuery();
+		prodotti = JSONConverter.convertToJSONArray(result);
+		closeConnection();
+		return prodotti;
+
 	}
 	
 	/**
@@ -529,8 +560,6 @@ public class DBMS {
 	/**
 	 * Ritorna un JSONArray contenente i dati dei pagamenti
 	 * @param IDUtente
-	 * @param tipo
-	 * @param periodo
 	 * @param pagato
 	 * @return pagamenti
 	 */
@@ -678,10 +707,7 @@ public class DBMS {
 	}
 	
 	/**
-	 * Ritorna un JSONArray contenente i dati dei pagamenti
-	 * @param IDUtente
-	 * @param tipo
-	 * @param periodo
+	 * Ritorna un JSONArray contenente i dati dei conti
 	 * @param pagato
 	 * @return JSONconti
 	 */
@@ -887,10 +913,10 @@ public class DBMS {
 	}
 	
 	/**
-	 * Ritorna un JSONArray contenente i dati delle ordinazioni
+	 * Ritorna un JSONArray contenente i dati delle ordinazioni per un cameriere
 	 * @return ordini
 	 */
-	public static JSONArray getOrdini() throws SQLException{
+	public static JSONArray getOrdiniCameriere() throws SQLException{
 		JSONArray ordini=null;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
 		String query1;
@@ -906,6 +932,48 @@ public class DBMS {
 		return ordini;
 			
 	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle ordinazioni per la cucina
+	 * @return ordini
+	 */
+	public static JSONArray getOrdiniCucina() throws SQLException{
+		JSONArray ordini=null;
+		Date oggi=Date.valueOf(LocalDate.now().toString());
+		String query1;
+
+		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
+		startConnection();
+		statement = connection.prepareStatement(query1);
+		statement.setDate(1, oggi);
+		result = statement.executeQuery();
+		ordini = JSONConverter.convertToJSONArray(result);
+
+		closeConnection();
+		return ordini;
+
+	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle ordinazioni per il bar
+	 * @return ordini
+	 */
+	public static JSONArray getOrdiniBar() throws SQLException{
+		JSONArray ordini=null;
+		Date oggi=Date.valueOf(LocalDate.now().toString());
+		String query1;
+
+		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
+		startConnection();
+		statement = connection.prepareStatement(query1);
+		statement.setDate(1, oggi);
+		result = statement.executeQuery();
+		ordini = JSONConverter.convertToJSONArray(result);
+
+		closeConnection();
+		return ordini;
+
+	}
 	
 	/**
 	 * Imposta una ordinazione come consegnata
@@ -920,12 +988,13 @@ public class DBMS {
 		closeConnection(); 
 		return result>0;	
 	}
-	
-	
+
+
 	/**
 	 * Modifica il flag disponibile di un prodotto
-	 * @param IDUtente
-	 * @param cognome
+	 * @param IDProdotto
+	 * @param flag
+	 * @throws SQLException
 	 */
 	public static void setDisponibile(int IDProdotto, boolean flag) throws SQLException{
 		String query = "UPDATE Prodotto SET Disponibile=? WHERE IDProdotto=?";
@@ -936,5 +1005,61 @@ public class DBMS {
 		statement.executeUpdate();
 		closeConnection(); 
 			
+	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle postazioni
+	 * @return postazioni
+	 */
+	public static JSONArray getPostazioni() throws SQLException{
+		JSONArray postazioni=null;
+		String query;
+
+		query = "SELECT * FROM Postazione";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		result = statement.executeQuery();
+		postazioni = JSONConverter.convertToJSONArray(result);
+		closeConnection();
+		return postazioni;
+
+	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle prenotazioni per la data selezionata
+	 * @return ordini
+	 */
+	public static JSONArray getPrenotazioni(LocalDate data) throws SQLException{
+		JSONArray prenotazioni=null;
+		String query;
+
+		query = "SELECT IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione WHERE Data=? AND Liberata=false";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		statement.setDate(1, Date.valueOf(data.toString()));
+		result = statement.executeQuery();
+		prenotazioni = JSONConverter.convertToJSONArray(result);
+		closeConnection();
+		return prenotazioni;
+
+	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle prenotazioni per la data selezionata con i dati di chi ha prenotato
+	 * @return ordini
+	 */
+	public static JSONArray getPrenotazioniBagnino(LocalDate data) throws SQLException{
+		JSONArray prenotazioni=null;
+		String query;
+
+		query = "SELECT Nome, Cognome, Cellulare, IDUtente, IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione JOIN Utente ON Prenotazione.Utente_IDUtente = Utente.IDUtente WHERE Data=? AND Liberata=false";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		statement.setDate(1, Date.valueOf(data.toString()));
+		result = statement.executeQuery();
+		prenotazioni = JSONConverter.convertToJSONArray(result);
+		closeConnection();
+		return prenotazioni;
+
 	}
 }

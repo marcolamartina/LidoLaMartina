@@ -32,16 +32,16 @@ response.setDateHeader ("Expires", 0); %>
 		<h1>Conferma ordinazione</h1>
 		<p>Puoi modificare le ordinazioni effettuate per i clienti, inserire il numero del tavolo in cui vuoi che sia consegnato l'ordine e confermare</p>
 	</div>
-	
+
 	<!-- Pannello "Buttons" -->
-       <div>
-       		<a href="CucinaBarHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
-       		<a href="OrdineCucinaBar" ><button type="submit" class="btn btn-primary" name="commit">Ordina</button></a>
-       		<a href="CheckoutCucinaBar" ><button type="submit" class="btn btn-primary" name="commit">Check-out</button></a>
-       		<a href="Prodotti" ><button type="submit" class="btn btn-primary" name="commit">Prodotti</button></a>
-            <br />
-            <br />
-		</div>
+	<div>
+		<a href="BarHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
+		<a href="OrdineBar" ><button type="submit" class="btn btn-primary" name="commit">Ordina</button></a>
+		<a href="CheckoutBar" ><button type="submit" class="btn btn-primary" name="commit">Check-out</button></a>
+		<a href="ProdottiBar" ><button type="submit" class="btn btn-primary" name="commit">Prodotti</button></a>
+		<br />
+		<br />
+	</div>
 	
 	<!-- Pannello "Carrelli" -->
        <div id="comande">

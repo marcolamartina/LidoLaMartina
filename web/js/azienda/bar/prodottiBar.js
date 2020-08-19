@@ -38,7 +38,7 @@ $(document).ready(function() {
  */
 function creaSelector(){
 	$.ajax({
-		url: "Prodotti",
+		url: "ProdottiBar",
 		method: "post",
 		data: {categorie: "true"},
 		success: function(data) {
@@ -59,7 +59,7 @@ function creaSelector(){
 function creaProdotti(){
 	
 	$.ajax({
-		url: "Prodotti",
+		url: "ProdottiBar",
 		method: "post",
 		data: {prodotti: "true"},
 		success: function(data) {
@@ -126,7 +126,7 @@ function parsingProdotti(arr) {
  */
 function setDisponibile(id, flag){ 
 	$.ajax({
-		url: "Prodotti",
+		url: "ProdottiBar",
 		method: "post",
 		data: {id: id,
 				flag: flag},

@@ -1,4 +1,4 @@
-package azienda.cucinaBar;
+package azienda.cucina;
 
 import java.io.IOException;
 
@@ -19,8 +19,8 @@ import database.DBMS;
  * Questa servlet intercetta le richieste relative alla pagina che consente ad un cameriere di prendere le ordinazioni per un cliente.
  * @author Marco La Martina
  */
-@WebServlet({ "/Prodotti", "/prodotti"})
-public class Prodotti extends CucinaBarHome {
+@WebServlet({ "/ProdottiCucina", "/prodotticucina"})
+public class ProdottiCucina extends CucinaHome {
 	private static final long serialVersionUID = 1L;
        
 
@@ -29,7 +29,7 @@ public class Prodotti extends CucinaBarHome {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		if(checkSession(request, response)) {	
-			String address = "/WEB-INF/azienda/cucina-bar/prodotti.jsp";
+			String address = "/WEB-INF/azienda/cucina/prodottiCucina.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(address);
 			dispatcher.forward(request, response);
 		}	
@@ -44,12 +44,12 @@ public class Prodotti extends CucinaBarHome {
 				
 				if(request.getParameter("categorie")!=null && request.getParameter("categorie").contentEquals("true")) {
 					response.setContentType("application/json");
-					response.getWriter().println(DBMS.getAllCategorie());
+					response.getWriter().println(DBMS.getAllCategorieCucina());
 					return;
 				}
 				else if(request.getParameter("prodotti")!=null && request.getParameter("prodotti").contentEquals("true")) {
 					response.setContentType("application/json");
-					response.getWriter().println(DBMS.getAllProdotti());
+					response.getWriter().println(DBMS.getAllProdottiCucina());
 					return;
 				}
 				else if(request.getParameter("id")!=null && request.getParameter("flag")!=null) {

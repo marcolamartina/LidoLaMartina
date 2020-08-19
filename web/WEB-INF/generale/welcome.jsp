@@ -21,6 +21,7 @@ response.setDateHeader ("Expires", 0); %>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
 <script src="js/generale/welcome.js"></script>
+<script src="js/generale/spiaggiaMappa.js"></script>
 
 </head>
 <body>
@@ -67,12 +68,22 @@ response.setDateHeader ("Expires", 0); %>
 	
 	</div>
 	<br />
+
+	<!-- Pannello "Mappa" -->
 	<div>
-	<h2>Dove siamo</h2>	
-	<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3143.4864481018635!2d13.913303650675772!3d38.01243750612397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131738756dfc13ef%3A0x7c7bf4e75a2f5888!2slido%20gorgo%20beach!5e0!3m2!1sit!2sit!4v1596644982915!5m2!1sit!2sit" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+		<h2>Dove siamo</h2>
+		<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3143.4864481018635!2d13.913303650675772!3d38.01243750612397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131738756dfc13ef%3A0x7c7bf4e75a2f5888!2slido%20gorgo%20beach!5e0!3m2!1sit!2sit!4v1596644982915!5m2!1sit!2sit" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
 	</div>
 	<br />
 	<br />
+
+	<!-- Pannello "Postazioni" -->
+	<h2>La nostra spiaggia</h2>
+	<%@ include file="/WEB-INF/utils/spiaggiaMappa.jsp"%>
+	<br />
+	<br />
+
+	<!-- Pannello "Menu" -->
 	<div id="menuWelcome">
         <h2>Il nostro menu</h2>	
         <br />

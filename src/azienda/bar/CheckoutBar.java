@@ -1,8 +1,9 @@
-package azienda.cucinaBar;
+package azienda.bar;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import database.DBMS;
+import model.Comande;
+import model.Utente;
+import utils.Mailer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,21 +11,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-import database.DBMS;
-import model.Comande;
-import model.Utente;
-import utils.Mailer;
-
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 /**
  * Questa servlet intercetta le richieste relative alla pagina che consente ad un cameriere di prendere le ordinazioni per un cliente.
  * @author Marco La Martina
  */
-@WebServlet({ "/CheckoutCucinaBar", "/checkoutcucinabar"})
-public class CheckoutCucinaBar extends CucinaBarHome {
+@WebServlet({ "/CheckoutBar", "/checkoutbar"})
+public class CheckoutBar extends BarHome {
 	private static final long serialVersionUID = 1L;
        
 
@@ -33,7 +30,7 @@ public class CheckoutCucinaBar extends CucinaBarHome {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		if(checkSession(request, response)) {	
-			String address = "/WEB-INF/azienda/cucina-bar/checkoutCucinaBar.jsp";
+			String address = "/WEB-INF/azienda/bar/checkoutBar.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(address);
 			dispatcher.forward(request, response);
 		}	

@@ -1,6 +1,7 @@
-package azienda.cameriere;
+package azienda.bar;
 
-import java.io.IOException;
+import model.Account;
+import model.Comande;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,59 +9,38 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-import database.DBMS;
-import model.Account;
+import java.io.IOException;
 
 
 /**
- * Questa servlet intercetta le richieste relative alle ordinazioni.
+ * Questa servlet intercetta le richieste relative alla pagina di home dei dipendenti della cucina o del bar.
  * @author Marco La Martina
  */
-@WebServlet({ "/RichiediOrdini", "/richiediordini"})
-public class RichiediOrdini extends CameriereHome {
+@WebServlet({ "/BarHome", "/barhome"})
+public class BarHome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+		if(checkSession(request, response)) {
+			
+			String address = "/WEB-INF/azienda/bar/barHome.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+			dispatcher.forward(request, response);
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if(checkSession(request, response)) {	
-			try {
-				if(request.getParameter("ruolo")!=null){
-					if(request.getParameter("ruolo").compareTo("cucina")==0){
-						response.setContentType("application/json");
-						response.getWriter().println(DBMS.getOrdiniCucina());
-						return;
-					}else if(request.getParameter("ruolo").compareTo("bar")==0){
-						response.setContentType("application/json");
-						response.getWriter().println(DBMS.getOrdiniBar());
-						return;
-					}else if (request.getParameter("ruolo").compareTo("cameriere")==0){
-						response.setContentType("application/json");
-						response.getWriter().println(DBMS.getOrdiniCameriere());
-						return;
-					}
-				}
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-
-			} catch(Exception e) {
-				e.printStackTrace();
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-			}
-		}	
+		doGet(request,response);
 	}
+
 	
 	/**
 	 * Verifica che la sessione sia valida per evitare di eseguire operazioni con privilegi senza
@@ -69,11 +49,10 @@ public class RichiediOrdini extends CameriereHome {
 	 * @param response
 	 * @return boolean
 	 */
-	@Override
 	protected boolean checkSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getSession().getAttribute("account") != null ) {
 			Account account=(Account)request.getSession().getAttribute("account");
-			if(account.getRuoli().containsKey("Cameriere") || account.getRuoli().containsKey("Cucina-Bar")) {
+			if(account.getRuoli().containsKey("Bar")) {
 				if(request.getSession().getAttribute("comande")==null) {
 					request.getSession().setAttribute("comande", new Comande());
 				}
@@ -88,8 +67,5 @@ public class RichiediOrdini extends CameriereHome {
 			dispatcher.forward(request, response);
 			return false;
 		}
-
 	}
-
 }
-
