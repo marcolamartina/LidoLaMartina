@@ -51,6 +51,7 @@
 
 		<!-- Footer Text -->
 		<br />
+		<p>Powered by Marco La Martina</p>
 		<p>© 2020 Copyright</p>
 			</footer>
 		</div>
