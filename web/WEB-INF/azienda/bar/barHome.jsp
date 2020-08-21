@@ -53,11 +53,9 @@ response.setDateHeader ("Expires", 0); %>
             <div id="ordini">
             </div>
 		</div>
-	
-	
-  	
- 		
-	
+
+
 </div>
-	
+<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
+</html>

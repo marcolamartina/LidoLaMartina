@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
 
 
 /**
@@ -134,7 +135,7 @@ public class DBMS {
 			return null;
 		}
 		ruoli.put("Cliente", utente.getIdUtente());
-		String query2="SELECT IDAccountAziendale, Ruolo FROM AccountAziendale WHERE Utente_IDUtente=?";
+		String query2="SELECT IDAccountAziendale, Ruolo FROM AccountAziendale WHERE Utente_IDUtente=? ORDER BY Ruolo ASC";
 		statement = connection.prepareStatement(query2);
 		statement.setInt(1, utente.getIdUtente());
 		result = statement.executeQuery();
@@ -516,7 +517,7 @@ public class DBMS {
 	 * @param IDUtente
 	 */
 	public static void inserisciOrdinazione(Carrello carrello, int IDUtente, int tavolo) throws SQLException{
-		//Verifica che esista già un conto non ancora pagato per la data corrente associata all'utente
+		//Verifica che esista già un conto non ancora pagato associato all'utente per la data corrente
 		Date data=Date.valueOf(LocalDate.now().toString());
 		int IDConto=0;
 		String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
@@ -920,9 +921,8 @@ public class DBMS {
 		JSONArray ordini=null;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
 		String query1;
-
-		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false ORDER BY IDOrdinazione ASC";
 		startConnection();
+		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false ORDER BY IDOrdinazione ASC";
 		statement = connection.prepareStatement(query1);
 		statement.setDate(1, oggi);
 		result = statement.executeQuery();
@@ -941,9 +941,8 @@ public class DBMS {
 		JSONArray ordini=null;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
 		String query1;
-
-		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
 		startConnection();
+		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
 		statement = connection.prepareStatement(query1);
 		statement.setDate(1, oggi);
 		result = statement.executeQuery();
@@ -962,9 +961,8 @@ public class DBMS {
 		JSONArray ordini=null;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
 		String query1;
-
-		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
 		startConnection();
+		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
 		statement = connection.prepareStatement(query1);
 		statement.setDate(1, oggi);
 		result = statement.executeQuery();
@@ -1011,12 +1009,11 @@ public class DBMS {
 	 * Ritorna un JSONArray contenente i dati delle postazioni
 	 * @return postazioni
 	 */
-	public static JSONArray getPostazioni() throws SQLException{
+	public static JSONArray getPostazioni() throws Exception{
 		JSONArray postazioni=null;
 		String query;
-
-		query = "SELECT * FROM Postazione";
 		startConnection();
+		query = "SELECT * FROM Postazione";
 		statement = connection.prepareStatement(query);
 		result = statement.executeQuery();
 		postazioni = JSONConverter.convertToJSONArray(result);
@@ -1031,10 +1028,12 @@ public class DBMS {
 	 */
 	public static JSONArray getPrenotazioni(LocalDate data) throws SQLException{
 		JSONArray prenotazioni=null;
+		if(LocalDate.now().isAfter(data)){
+			return new JSONArray();
+		}
 		String query;
-
-		query = "SELECT IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione WHERE Data=? AND Liberata=false";
 		startConnection();
+		query = "SELECT IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione WHERE Data=? AND Liberata=false";
 		statement = connection.prepareStatement(query);
 		statement.setDate(1, Date.valueOf(data.toString()));
 		result = statement.executeQuery();
@@ -1050,10 +1049,12 @@ public class DBMS {
 	 */
 	public static JSONArray getPrenotazioniBagnino(LocalDate data) throws SQLException{
 		JSONArray prenotazioni=null;
+		if(LocalDate.now().isAfter(data)){
+			return new JSONArray();
+		}
 		String query;
-
-		query = "SELECT Nome, Cognome, Cellulare, IDUtente, IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione JOIN Utente ON Prenotazione.Utente_IDUtente = Utente.IDUtente WHERE Data=? AND Liberata=false";
 		startConnection();
+		query = "SELECT Nome, Cognome, Cellulare, IDUtente, IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione JOIN Utente ON Prenotazione.Utente_IDUtente = Utente.IDUtente WHERE Data=? AND Liberata=false";
 		statement = connection.prepareStatement(query);
 		statement.setDate(1, Date.valueOf(data.toString()));
 		result = statement.executeQuery();
@@ -1061,5 +1062,127 @@ public class DBMS {
 		closeConnection();
 		return prenotazioni;
 
+	}
+
+	/**
+	 * Effettua una prenotazione per delle sdraio singole
+	 * @param sdraio
+	 * @param date
+	 * @param IDUtente
+	 * @param prezzo
+	 */
+	public static boolean prenotaSdraio(int sdraio, LocalDate date, int IDUtente, double prezzo) throws SQLException{
+		int IDConto=0;
+		Date data=Date.valueOf(date.toString());
+
+		//Verifica che ci siano ancora sdraio disponibili per la data selezionata
+		String query = "SELECT SUM(Sdraio) AS sdraioOccupate FROM Prenotazione WHERE Data=? AND Liberata=false";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		statement.setDate(1, data);
+		result = statement.executeQuery();
+		if(result.next()) {
+			if(result.getInt("sdraioOccupate")+sdraio>Prenotazione.getSdraioMax()) return false;
+		}
+
+		//Verifica che esista già un conto non ancora pagato per la data selezionata associato all'utente
+
+		String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
+		startConnection();
+		statement = connection.prepareStatement(query1);
+		statement.setDate(1, data);
+		statement.setInt(2, IDUtente);
+		result = statement.executeQuery();
+		if(result.next()) {
+			IDConto=result.getInt("IDConto");
+		}else {
+			String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
+			statement = connection.prepareStatement(query2);
+			statement.setDate(1, data);
+			statement.setInt(2, IDUtente);
+			statement.executeUpdate();
+
+			statement = connection.prepareStatement(query1);
+			statement.setDate(1, data);
+			statement.setInt(2, IDUtente);
+			result = statement.executeQuery();
+			if(result.next()) {
+				IDConto=result.getInt("IDConto");
+			}
+		}
+		String query3 = "INSERT INTO Prenotazione (Data, Utente_IDUtente, Conto_IDConto, Sdraio, Prezzo, Postazione_Numero) "+
+				"VALUES (?, ?, ?, ?, ?, NULL)";
+		statement = connection.prepareStatement(query3);
+		statement.setDate(1, data);
+		statement.setInt(2, IDUtente);
+		statement.setInt(3, IDConto);
+		statement.setInt(4, sdraio);
+		statement.setDouble(5, prezzo);
+		statement.executeUpdate();
+		closeConnection();
+
+		return true;
+	}
+
+	/**
+	 * Effettua una prenotazione per una postazione
+	 * @param numero
+	 * @param date
+	 * @param IDUtente
+	 * @param prezzo
+	 */
+	public static boolean prenotaPostazione(int numero, LocalDate date, int IDUtente, double prezzo) throws SQLException{
+
+		int IDConto=0;
+		Date data=Date.valueOf(date.toString());
+
+		//Verifica che la postazione sia veramente disponibile per la data selezionata
+		String query = "SELECT IDPrenotazione FROM Prenotazione WHERE Data=? AND Liberata=false AND Postazione_Numero=?";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		statement.setDate(1, data);
+		statement.setInt(2, numero);
+		result = statement.executeQuery();
+		if(result.next()) {
+			if(result.getInt("IDPrenotazione")!=0) return false;
+		}
+
+		//Verifica che esista già un conto non ancora pagato per la data selezionata associato all'utente
+		String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
+		startConnection();
+		statement = connection.prepareStatement(query1);
+		statement.setDate(1, data);
+		statement.setInt(2, IDUtente);
+		result = statement.executeQuery();
+		if(result.next()) {
+			IDConto=result.getInt("IDConto");
+		}else {
+			String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
+			statement = connection.prepareStatement(query2);
+			statement.setDate(1, data);
+			statement.setInt(2, IDUtente);
+			statement.executeUpdate();
+
+			statement = connection.prepareStatement(query1);
+			statement.setDate(1, data);
+			statement.setInt(2, IDUtente);
+			result = statement.executeQuery();
+			if(result.next()) {
+				IDConto=result.getInt("IDConto");
+			}
+		}
+		String query3 = "INSERT INTO Prenotazione (Data, Utente_IDUtente, Conto_IDConto, Sdraio, Prezzo, Postazione_Numero) "+
+				"VALUES (?, ?, ?, ?, ?, ?)";
+		statement = connection.prepareStatement(query3);
+		statement.setDate(1, data);
+		statement.setInt(2, IDUtente);
+		statement.setInt(3, IDConto);
+		statement.setInt(4, 0);
+		statement.setDouble(5, prezzo);
+		statement.setInt(6, numero);
+		statement.executeUpdate();
+		closeConnection();
+
+		return true;
 	}
 }

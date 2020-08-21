@@ -31,9 +31,17 @@ response.setDateHeader ("Expires", 0); %>
 	
 	<div class="jumbotron">
 		<h1>Gorgo Beach</h1>
-		<p>A pochi km da Cefalù, il lido Gorgo Beach offre un'ottima location, ottimi lettini in legno e gommapiuma o in tela, ombrelloni ampi. Al bar splendide e gustose insalate, panini e quant'altro. Prezzi onesti, siete in Sicilia, ossia in Paradiso.</p>
+		<p>A pochi km da Cefalù, il lido Gorgo Beach offre un'ottima location, ottimi lettini in tela, ombrelloni ampi. Al bar splendide e gustose insalate, panini e quant'altro. Prezzi onesti, siete in Sicilia, ossia in Paradiso.</p>
 		<p>Registrati ed effettua l'accesso per potere prenotare le postazioni e le sdraio, ma anche per prenotare cibo e bibite durante la tua visita.</p>	
-		<p>Per qualsiasi esigenza <a href="mailto:lidogorgobeach@gmail.com">contattaci</a></p>
+		<p style="display: inline">Per qualsiasi esigenza </p>
+			<div style="display: inline" class="dropdown">
+				<a href="" data-toggle="dropdown">contattaci</a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="mailto:lidogorgobeach@gmail.com"><i class="fas fa-envelope mr-3"></i>lidogorgobeach@gmail.com</a>
+					<a class="dropdown-item" href="tel:+393272294015"><i class="fas fa-phone mr-3"></i>3272294015</a>
+					<a class="dropdown-item" href="https://www.facebook.com/Lido-Gorgo-Beach-1436330719989547/"><i class="fab fa-facebook-square mr-3"></i>Facebook</a>
+				</div>
+			</div>
 	</div>	
 	
 	<div id="carousel" class="carousel slide" data-ride="carousel">
@@ -88,9 +96,8 @@ response.setDateHeader ("Expires", 0); %>
         <h2>Il nostro menu</h2>	
         <br />
     </div>
-	
-	
-	
+
 </div>
-	
+<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
+</html>

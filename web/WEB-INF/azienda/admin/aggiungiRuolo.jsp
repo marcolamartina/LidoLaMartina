@@ -103,10 +103,9 @@ response.setDateHeader ("Expires", 0); %>
 	      			</tbody>
 	  			</table>
 			</div>
-		</div>	
-		
-			
-	
+		</div>
+
 </div>
-	
+<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
+</html>

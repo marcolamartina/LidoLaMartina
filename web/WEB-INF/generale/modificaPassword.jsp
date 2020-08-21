@@ -70,7 +70,8 @@
 		<script>
 			$("#email").val("<%= account.getUtente().getEmail()%>");
 		</script>
-		<% } %>	
+		<% } %>
 
+	<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
 </html>

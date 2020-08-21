@@ -19,6 +19,7 @@ function richiediOrdini() {
 	$.ajax({
 		url: "RichiediOrdini",
 		method: "post",
+		data: {ruolo: "cameriere"},
 		success: function(data) {
 			mostraOrdini(data);
 			},

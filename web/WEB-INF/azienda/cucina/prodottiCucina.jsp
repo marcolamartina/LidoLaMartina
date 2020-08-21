@@ -56,11 +56,9 @@ response.setDateHeader ("Expires", 0); %>
         <br />
         <div id="menu">
         	
-        </div>  
-            
-            
-     
-	
+        </div>
+
 </div>
-	
+<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
+</html>

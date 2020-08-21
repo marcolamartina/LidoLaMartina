@@ -74,5 +74,6 @@
 		</script>
 		<% } %>
 
+	<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
 </html>

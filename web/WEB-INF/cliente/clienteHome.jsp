@@ -30,7 +30,7 @@ response.setDateHeader ("Expires", 0); %>
 	
 	<div class="jumbotron">
 		<h1>Ciao ${account.utente.nome}!</h1>
-		<p>Puoi prenotare in comodità sdraio, lettini in gommapiuma, ombrelloni ma anche cibo e bevande.</p>
+		<p>Puoi prenotare in comodità sdraio e ombrelloni ma anche cibo e bevande.</p>
 	</div>
 	
 	<div >
@@ -39,8 +39,7 @@ response.setDateHeader ("Expires", 0); %>
 		<br />
 		<a href="FoodDrink"><img class="img-fluid img-thumbnail" src="img/banner_fooddrink.jpg" alt="food_drink" title="Food&Drink" style=" max-width: 100%; height: auto;"/></a>
 	</div>
-	
-	
 </div>
-	
+<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
+</html>

@@ -37,7 +37,7 @@ function richiediConti() {
  */
 function mostraConti(data) {
 	// Se non c'è un conto aperto mostra il relativo messaggio.
-	if(data.length == 0 ) {
+	if(data.length === 0 ) {
 		$("#accordionClients").hide();
 		$("#search").hide();
 		$("#contiVuoti").show();

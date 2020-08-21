@@ -53,5 +53,7 @@
 		<script>$("#email").val("<%= session.getAttribute("email").toString()%>")</script>
 		<% 	session.removeAttribute("email");
 		} %>
+
+	<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
 </html>

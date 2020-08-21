@@ -1,6 +1,9 @@
 var sdraioMax;
 
 $(document).ready(function() {
+    $("#conferma").hide();
+    $("#sdraio").change(checkButtonVisibility);
+    $("#legenda").append('<i class="fa fa-square" aria-hidden="true" style="color: green; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"></i><small> Selezionato</small><br />');
     richiediPostazioni();
     sdraioMax=parseInt($("#sdraioBattigia").text());
     $("#date").change(aggiornaMappa);
@@ -39,6 +42,7 @@ function aggiornaMappa(){
 
 function resetMappa(){
     $(".postazione").css("background-color", "white");
+    $(".postazione").addClass("free");
 }
 
 function setPostazioni(data){
@@ -54,8 +58,17 @@ function setPostazioni(data){
                 colore="yellow";
             }
             $("#postazione"+data[i].numero).css("background-color", colore);
+            $("#postazione"+data[i].numero).removeClass("free");
         }
     }
+    $("#sdraio").empty();
+    $("#sdraio").append('<option>0</option>');
+    for(var j=1; j<=sdraioMax-sdraio;j++){
+        $("#sdraio").append('<option>'+j+'</option>');
+    }
+
+
+    $(".free").click(select);
     $("#sdraioBattigia").text(sdraioMax-sdraio);
 
     // Aggiorna la mappa ogni 10 minuti.
@@ -113,4 +126,29 @@ function mostraMappa(data) {
     $("#mappaLido").append(bar);
     $("#mappaLido").append(pedana);
     $("#mappaLido").append(ingresso);
+}
+
+function select(){
+    if($(this).hasClass("selected")){
+        $(this).removeClass("selected");
+        $(this).css("background-color", "white");
+    }else{
+        $(this).addClass("selected");
+        $(this).css("background-color","green");
+    }
+    var postazioni="";
+    $(".selected").each(function(){
+        postazioni+=("-"+$(this).attr("id").substr(10));
+    });
+    $("#posti").val(postazioni.substr(1));
+    checkButtonVisibility();
+
+};
+
+function checkButtonVisibility(){
+    if($(".selected").length===0 && $("#sdraio").val()==="0"){
+        $("#conferma").hide();
+    }else{
+        $("#conferma").show();
+    }
 }

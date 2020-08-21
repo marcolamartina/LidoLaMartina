@@ -70,11 +70,8 @@ response.setDateHeader ("Expires", 0); %>
 				</tr>
 			</tbody>
 		</table>
-				
-		
-	
- 
-	
+
 </div>
-	
+<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
+</html>

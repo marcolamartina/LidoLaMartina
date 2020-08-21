@@ -95,7 +95,8 @@
 	<% if(session.getAttribute("cellulare")!=null){ %>
 		<script>$("#cellulare").val("<%= session.getAttribute("cellulare").toString()%>")</script>
 		<% 	session.removeAttribute("cellulare");
-		} %>		
-	
+		} %>
+
+	<%@ include file="/WEB-INF/utils/footer.jsp"%>
 </body>
 </html>

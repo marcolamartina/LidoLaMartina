@@ -16,7 +16,7 @@ $(document).ready(function() {
     }
     string_date+=date.getDate();
     $("#date").val(string_date);
-    //$('[type="date"]').prop('min', string_date);
+    $('[type="date"]').prop('min', string_date);
 
     $("#search").on("keyup", function() {
         var value = $(this).val().toLowerCase().replace(" ","");
@@ -35,6 +35,7 @@ function aggiornaMappa(){
     $.ajax({
         url: "BagninoHome",
         method: "post",
+        async:false,
         data: {data: $("#date").val()},
         success: function(data) {
             setPostazioni(data);
@@ -47,6 +48,7 @@ function aggiornaMappa(){
 
 function resetMappa(){
     $(".postazione").css("background-color", "white");
+    $(".postazione").removeAttr("data-original-title");
     $("#spiaggiaTableBody").empty();
 }
 
@@ -64,7 +66,7 @@ function setPostazioni(data){
             }
             $("#postazione"+data[i].numero).css("background-color", colore);
             $("#postazione"+data[i].numero).attr("data-toggle","tooltip");
-            $("#postazione"+data[i].numero).attr("title",data[i].nome+" "+data[i].cognome);
+            $("#postazione"+data[i].numero).attr("data-original-title",data[i].nome+" "+data[i].cognome);
 
         }
 
@@ -101,6 +103,7 @@ function richiediPostazioni() {
         url: "SpiaggiaMappa",
         method: "post",
         data: {postazioni: "true"},
+        async:false,
         success: function(data) {
             mostraMappa(data);
         },

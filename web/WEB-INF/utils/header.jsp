@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+		 pageEncoding="UTF-8"%>
+<% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader ("Expires", 0); %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -8,8 +11,8 @@
 
   
 <style>
-label { display: inline }
-
+	label { display: inline }
+	button { margin: 2px}
 </style>
 
 <script>
@@ -110,11 +113,9 @@ label { display: inline }
 	<br />
 	
 	<div class="container" id="notify">
-		<%
-		    if (session.getAttribute("notify")!=null) {
+		<% if (session.getAttribute("notify")!=null) {
 		    	Notify notifica=(Notify)session.getAttribute("notify");%>
 		        <script>notify(<%=notifica.getFlag()%>,"<%=notifica.getTitle()%>","<%=notifica.getText()%>")</script>
-    		
     		<% session.removeAttribute("notify");
     		}
     	%>
@@ -143,6 +144,6 @@ label { display: inline }
     			</div>
   			</div>
 		</div>
-	
+
 </body>
 </html>
