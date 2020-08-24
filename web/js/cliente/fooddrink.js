@@ -1,6 +1,6 @@
 $(document).ready(function() {
-	
-	creaSelector();
+
+	creaProdotti();
 	
 	
 	/** 
@@ -33,24 +33,6 @@ $(document).ready(function() {
     
 });
 
-/**
- * Creazione del menu a tendina con le categorie e gli headers delle categorie 
- */
-function creaSelector(){
-	$.ajax({
-		url: "VisualizzaProdotti",
-		method: "post",
-		data: {categorie: "true"},
-		success: function(data) {
-			parsingCategorie(data);
-			creaProdotti();
-			},
-		error: function(xhr) {
-			$("#modalErr").modal();
-		}
-	});
-	
-}
 
 
 /**
@@ -65,7 +47,7 @@ function creaProdotti(){
 		success: function(data) {
 			parsingProdotti(data);
 			},
-		error: function(xhr) {
+		error: function() {
 			$("#modalErr").modal();
 		}
 	});
@@ -73,28 +55,10 @@ function creaProdotti(){
 }
 
 
-
-function parsingCategorie(arr) { 
-	var out = '<option value="Tutto">Tutto</option>';
-	var i;
-	
-	for(i = 0; i < arr.length; i++) {
-		var categoria=arr[i].categoria;
-		var categoriaId;
-		if (categoria!=null && categoria!=undefined){
-			categoriaId=categoria.replace(" ","").replace("'","");
-		}	
-		out += '<option value="' + categoria + '">' + categoria + '</option>';
-		var content='<div id="'+categoriaId+'Container"><h3>'+categoria+'</h3><table class="table table-sm table-borderless"><tbody id="'+categoriaId+'"></tbody></table></div>'
-		$("#menu").append(content);
-	}
-	$("#selCategoria").html(out); 
-}
-
-
 function parsingProdotti(arr) { 
 	var i;
 	var j;
+	$("#selCategoria").html('<option value="Tutto">Tutto</option>');
 	for(i = 0; i < arr.length; i++) {
 		var categoria=arr[i].categoria;
 		var quantitySelector='<td class="col-sm-1"><select class="form-control form-control-sm" style="width:auto;" id="sel'+arr[i].idprodotto+'">';
@@ -114,6 +78,14 @@ function parsingProdotti(arr) {
 			content+='<tr><td colspan="5"><small>'+arr[i].ingredienti+'</small></td></tr>';
 		}
 		content+='<tr id="rownote'+arr[i].idprodotto+'" style="display:none">'+note+'</tr><tr><td colspan="12"><hr /></td></tr></tbody>';
+
+		if($("#"+categoriaId).length===0){
+			var out = '<option value="' + categoria + '">' + categoria + '</option>';
+			var content2='<div id="'+categoriaId+'Container"><h3>'+categoria+'</h3><table class="table table-sm table-borderless"><tbody id="'+categoriaId+'"></tbody></table></div>'
+			$("#menu").append(content2);
+			$("#selCategoria").append(out);
+		}
+
 		$("#"+categoriaId).append(content);
 	}
 }

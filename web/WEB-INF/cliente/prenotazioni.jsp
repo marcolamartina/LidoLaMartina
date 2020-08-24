@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Spiaggia</title>
+    <title>Prenotazioni</title>
     <link rel="icon" href="img/logo.jpg" type="image/jpg" />
 
     <!-- CSS only -->
@@ -20,46 +20,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
+    <script src="js/cliente/prenotazioni.js"></script>
     <style>
-        .free{
-            cursor: pointer;
-        }
 
     </style>
-    <script src="js/cliente/spiaggia.js"></script>
-
-
 </head>
 <body>
 <%@ include file="/WEB-INF/utils/header.jsp"%>
 <div class="container">
 
+
     <div class="jumbotron">
-        <h1>Spiaggia</h1>
-        <p>Prenota le tue postazioni o delle sdraio singole. Seleziona le postazioni che desideri, comprensive ciascuna di un ombrellone e due sdraio. Possiamo anche aggiungere altre sdraio da mettere vicino la postazione, nei limiti dello spazio a disposizione, o in battigia. </p>
-        <p>Le prenotazioni effettuate saranno presenti nella sezione Prenotazioni del menu Account</p>
+        <h1>Prenotazioni</h1>
+        <p>Puoi vedere ed eliminare le tue prenotazioni</p>
     </div>
 
 
 
-    <!-- Pannello "Prenotazione" -->
-
-    <form id="formConferma" action="Spiaggia" method="post">
-        <!-- Pannello "Postazioni" -->
-        <%@ include file="/WEB-INF/utils/spiaggiaMappa.jsp"%>
+    <!-- Pannello "Prenotazioni" -->
+    <div id="prenotazioni">
+        <h2 id="prenotazioniVuote" style="display:none">Non hai ancora effettuato nessuna prenotazione</h2>
         <br />
-            <div class="form-group">
-                <label for="sdraio">Sdraio singole:</label>
-                <select class="form-control" id="sdraio" name="sdraio">
+    </div>
 
-                </select>
-            </div>
-            <div class="form-group">
-                <input style="display: none" type="text" class="form-control" id="posti" name="posti">
-            </div>
-            <button type="submit" id="conferma" class="btn btn-primary btn-sm" >Conferma</button>
+    <!-- The Modal -->
+    <div class="modal" id="modalSucc">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-    </form>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Prenotazione eliminata</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    La prenotazione è stata eliminata correttamente
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Chiudi</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </div>
 <%@ include file="/WEB-INF/utils/footer.jsp"%>

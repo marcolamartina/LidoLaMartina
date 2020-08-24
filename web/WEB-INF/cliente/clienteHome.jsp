@@ -25,19 +25,19 @@ response.setDateHeader ("Expires", 0); %>
 <body>
 <%@ include file="/WEB-INF/utils/header.jsp"%>
 <div class="container">
-	
-	
-	
+
+
+
 	<div class="jumbotron">
 		<h1>Ciao ${account.utente.nome}!</h1>
 		<p>Puoi prenotare in comodità sdraio e ombrelloni ma anche cibo e bevande.</p>
 	</div>
 	
-	<div >
-		<a href="Spiaggia"><img class="img-fluid img-thumbnail" src="img/spiaggia.jpg" alt="spiaggia" title="Spiaggia" style=" max-width: 100%; height: auto;"/></a>
+	<div>
+		<a href="Spiaggia"><img class="img-fluid img-thumbnail" src="img/spiaggia.jpg" alt="spiaggia" title="Spiaggia"/></a>
 		<br />
 		<br />
-		<a href="FoodDrink"><img class="img-fluid img-thumbnail" src="img/banner_fooddrink.jpg" alt="food_drink" title="Food&Drink" style=" max-width: 100%; height: auto;"/></a>
+		<a href="FoodDrink"><img class="img-fluid img-thumbnail" src="img/banner_fooddrink.jpg" alt="food_drink" title="Food&Drink"/></a>
 	</div>
 </div>
 <%@ include file="/WEB-INF/utils/footer.jsp"%>

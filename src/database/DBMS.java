@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Thread.sleep;
 
 
 /**
@@ -1019,7 +1018,6 @@ public class DBMS {
 		postazioni = JSONConverter.convertToJSONArray(result);
 		closeConnection();
 		return postazioni;
-
 	}
 
 	/**
@@ -1184,5 +1182,54 @@ public class DBMS {
 		closeConnection();
 
 		return true;
+	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle prenotazioni dell'utente
+	 * @param IDUtente
+	 * @throws SQLException
+	 */
+	public static JSONArray getPrenotazioniUtente(int IDUtente) throws SQLException{
+		JSONArray prenotazioni=null;
+		Date data=Date.valueOf(LocalDate.now().toString());
+		String query;
+		startConnection();
+		query = "SELECT IDPrenotazione, Sdraio, Prezzo, Data, Prenotazione.Conto_IDConto AS IDConto, Postazione_Numero AS Numero FROM Prenotazione WHERE Prenotazione.Utente_IDUtente=? AND Data>=? AND Liberata=false AND Occupata=false";
+		statement = connection.prepareStatement(query);
+		statement.setInt(1, IDUtente);
+		statement.setDate(2, Date.valueOf(data.toString()));
+		result = statement.executeQuery();
+		prenotazioni = JSONConverter.convertToJSONArray(result);
+		closeConnection();
+		return prenotazioni;
+
+	}
+
+	/**
+	 * Rimuove una prenotazione e ritorna un boolean che indica se l'operazione è riuscita correttamente
+	 * @param IDPrenotazione
+	 * @throws SQLException
+	 */
+	public static boolean rimuoviPrenotazione(int IDPrenotazione, int IDUtente, int IDConto) throws SQLException{
+		Date data=Date.valueOf(LocalDate.now().toString());
+		String query = "DELETE FROM Prenotazione WHERE IDPrenotazione=? AND Utente_IDUtente=? AND Data>=? AND Liberata=false AND Occupata=false AND Conto_IDConto=?";
+		startConnection();
+		statement = connection.prepareStatement(query);
+		statement.setInt(1, IDPrenotazione);
+		statement.setInt(2, IDUtente);
+		statement.setDate(3, Date.valueOf(data.toString()));
+		statement.setInt(4, IDConto);
+		int result=statement.executeUpdate();
+
+		String query2 = "DELETE FROM Conto WHERE IDConto=? AND (SELECT COUNT(Prenotazione.IDPrenotazione) AS Prenotazioni FROM Prenotazione WHERE Conto_IDConto=?)=0 AND (SELECT COUNT(IDOrdinazione) AS Ordinazioni FROM Ordinazione WHERE Ref_IDConto=?)=0";
+		statement = connection.prepareStatement(query2);
+		statement.setInt(1, IDConto);
+		statement.setInt(2, IDConto);
+		statement.setInt(3, IDConto);
+		statement.executeUpdate();
+		closeConnection();
+
+		return result>0;
+
 	}
 }

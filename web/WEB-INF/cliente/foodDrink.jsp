@@ -64,7 +64,7 @@ response.setDateHeader ("Expires", 0); %>
 
       				<!-- Modal footer -->
       				<div class="modal-footer">
-        				<button type="button" class="btn btn-danger" data-dismiss="modal">Chiudi</button>
+        				<button type="button" class="btn btn-success" data-dismiss="modal">Chiudi</button>
       				</div>
 
     			</div>

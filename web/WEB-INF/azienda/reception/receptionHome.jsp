@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Spiaggia</title>
+    <title>Gorgo Beach</title>
     <link rel="icon" href="img/logo.jpg" type="image/jpg" />
 
     <!-- CSS only -->
@@ -20,13 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
-    <style>
-        .free{
-            cursor: pointer;
-        }
-
-    </style>
-    <script src="js/cliente/spiaggia.js"></script>
+    <script src="js/azienda/reception/receptionHome.js"></script>
 
 
 </head>
@@ -35,31 +29,29 @@
 <div class="container">
 
     <div class="jumbotron">
-        <h1>Spiaggia</h1>
-        <p>Prenota le tue postazioni o delle sdraio singole. Seleziona le postazioni che desideri, comprensive ciascuna di un ombrellone e due sdraio. Possiamo anche aggiungere altre sdraio da mettere vicino la postazione, nei limiti dello spazio a disposizione, o in battigia. </p>
-        <p>Le prenotazioni effettuate saranno presenti nella sezione Prenotazioni del menu Account</p>
+        <h1>Ciao ${account.utente.nome}!</h1>
+        <p>Da questa sezione potrai vedere lo stato delle postazioni, registrare l'arrivo dei clienti e vendere postazioni o sdraio a clienti non prenotati</p>
     </div>
 
 
 
-    <!-- Pannello "Prenotazione" -->
+    <!-- Pannello "Postazioni" -->
+    <%@ include file="/WEB-INF/utils/spiaggiaMappa.jsp"%>
 
-    <form id="formConferma" action="Spiaggia" method="post">
-        <!-- Pannello "Postazioni" -->
-        <%@ include file="/WEB-INF/utils/spiaggiaMappa.jsp"%>
-        <br />
-            <div class="form-group">
-                <label for="sdraio">Sdraio singole:</label>
-                <select class="form-control" id="sdraio" name="sdraio">
-
-                </select>
-            </div>
-            <div class="form-group">
-                <input style="display: none" type="text" class="form-control" id="posti" name="posti">
-            </div>
-            <button type="submit" id="conferma" class="btn btn-primary btn-sm" >Conferma</button>
-
-    </form>
+    <!-- Pannello "Cerca" -->
+    <input class="form-control" id="search" type="text" placeholder="Cerca..">
+    <br />
+    <table id="spiaggiaTable" class="table table-borderless">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Sdraio</th>
+            <th>Postazioni</th>
+        </tr>
+        </thead>
+        <tbody id="spiaggiaTableBody">
+        </tbody>
+    </table>
 
 </div>
 <%@ include file="/WEB-INF/utils/footer.jsp"%>

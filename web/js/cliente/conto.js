@@ -106,10 +106,9 @@ function printTable(id, bar, spiaggia){
 			totale = parseFloat(parseFloat(costo)+ parseFloat(totale)).toFixed(2);
 		}
 	}
-	
-	$("#contenutoConto"+id).show();
-	$("#bodyBar"+id).append(content_bar).show();
-	$("#bodySpiaggia"+id).append(content_spiaggia).show();
+
+	$("#bodyBar"+id).append(content_bar);
+	$("#bodySpiaggia"+id).append(content_spiaggia);
 	$("#totaleConto"+id).append("Totale: " + totale + "&euro;");
 	$("#title"+id).append('<span style="float:right">'+totale + '&euro;'+'</span>');
 }

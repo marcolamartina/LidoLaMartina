@@ -72,6 +72,8 @@
 						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Conto">Conto</a>
 						      <div class="dropdown-divider"></div>
+							  <a class="dropdown-item" href="Prenotazioni">Prenotazioni</a>
+							  <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="StoricoPagamenti">Storico pagamenti</a>
 						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Profile">Profilo</a>

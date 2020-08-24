@@ -33,6 +33,11 @@ function aggiornaMappa(){
             $("#modalErr").modal();
         }
     });
+
+    // Aggiorna la mappa ogni 10 minuti.
+    setInterval(function(){
+        aggiornaMappa();
+    }, 600000);
 }
 
 
@@ -58,10 +63,6 @@ function setPostazioni(data){
     }
     $("#sdraioBattigia").text(sdraioMax-sdraio);
 
-    // Aggiorna la mappa ogni 10 minuti.
-    setInterval(function(){
-        aggiornaMappa();
-    }, 600000);
 }
 
 /**
@@ -89,7 +90,7 @@ function mostraMappa(data) {
     var max_x=1;
     var max_y=1;
 
-    for(i=0; i<data.length; i++){
+    for(var i=0; i<data.length; i++){
         var numero=data[i].numero;
         var x=parseInt(data[i].x);
         var y=parseInt(data[i].y);

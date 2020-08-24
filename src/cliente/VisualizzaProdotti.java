@@ -24,12 +24,8 @@ public class VisualizzaProdotti extends ClienteHome {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			try {
-				response.setContentType("application/json");
-				if(request.getParameter("categorie")!=null && request.getParameter("categorie").contentEquals("true")) {
-					response.getWriter().println(DBMS.getCategorie());
-					return;
-				}
-				else if(request.getParameter("prodotti")!=null && request.getParameter("prodotti").contentEquals("true")) {
+				if(request.getParameter("prodotti")!=null && request.getParameter("prodotti").contentEquals("true")) {
+					response.setContentType("application/json");
 					response.getWriter().println(DBMS.getProdotti());
 					return;
 				}

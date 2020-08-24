@@ -5,6 +5,7 @@ $(document).ready(function() {
     $("#sdraio").change(checkButtonVisibility);
     $("#legenda").append('<i class="fa fa-square" aria-hidden="true" style="color: green; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"></i><small> Selezionato</small><br />');
     richiediPostazioni();
+
     sdraioMax=parseInt($("#sdraioBattigia").text());
     $("#date").change(aggiornaMappa);
     var date=new Date();
@@ -19,6 +20,7 @@ $(document).ready(function() {
     string_date+=date.getDate();
     $("#date").val(string_date);
     $('[type="date"]').prop('min', string_date);
+    $(".postazione").click(select);
     aggiornaMappa();
 });
 
@@ -43,6 +45,9 @@ function aggiornaMappa(){
 function resetMappa(){
     $(".postazione").css("background-color", "white");
     $(".postazione").addClass("free");
+    $(".postazione").removeClass("selected");
+    $(".postazione").css("cursor", "");
+    $("#conferma").hide();
 }
 
 function setPostazioni(data){
@@ -57,6 +62,7 @@ function setPostazioni(data){
             }else{
                 colore="yellow";
             }
+            $("#postazione"+data[i].numero).css("cursor", "not-allowed");
             $("#postazione"+data[i].numero).css("background-color", colore);
             $("#postazione"+data[i].numero).removeClass("free");
         }
@@ -68,7 +74,6 @@ function setPostazioni(data){
     }
 
 
-    $(".free").click(select);
     $("#sdraioBattigia").text(sdraioMax-sdraio);
 
     // Aggiorna la mappa ogni 10 minuti.
@@ -102,7 +107,7 @@ function mostraMappa(data) {
     var max_x=1;
     var max_y=1;
 
-    for(i=0; i<data.length; i++){
+    for(var i=0; i<data.length; i++){
         var numero=data[i].numero;
         var x=parseInt(data[i].x);
         var y=parseInt(data[i].y);
@@ -129,19 +134,21 @@ function mostraMappa(data) {
 }
 
 function select(){
-    if($(this).hasClass("selected")){
-        $(this).removeClass("selected");
-        $(this).css("background-color", "white");
-    }else{
-        $(this).addClass("selected");
-        $(this).css("background-color","green");
+    if($(this).hasClass("free")){
+        if($(this).hasClass("selected")){
+            $(this).removeClass("selected");
+            $(this).css("background-color", "white");
+        }else{
+            $(this).addClass("selected");
+            $(this).css("background-color","green");
+        }
+        var postazioni="";
+        $(".selected").each(function(){
+            postazioni+=("-"+$(this).attr("id").substr(10));
+        });
+        $("#posti").val(postazioni.substr(1));
+        checkButtonVisibility();
     }
-    var postazioni="";
-    $(".selected").each(function(){
-        postazioni+=("-"+$(this).attr("id").substr(10));
-    });
-    $("#posti").val(postazioni.substr(1));
-    checkButtonVisibility();
 
 };
 

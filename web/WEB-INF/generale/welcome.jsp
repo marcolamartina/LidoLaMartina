@@ -38,8 +38,10 @@ response.setDateHeader ("Expires", 0); %>
 				<a href="" data-toggle="dropdown">contattaci</a>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="mailto:lidogorgobeach@gmail.com"><i class="fas fa-envelope mr-3"></i>lidogorgobeach@gmail.com</a>
-					<a class="dropdown-item" href="tel:+393272294015"><i class="fas fa-phone mr-3"></i>3272294015</a>
+					<a class="dropdown-item" href="tel:+393272294014"><i class="fas fa-phone mr-3"></i>3272294014</a>
 					<a class="dropdown-item" href="https://www.facebook.com/Lido-Gorgo-Beach-1436330719989547/"><i class="fab fa-facebook-square mr-3"></i>Facebook</a>
+					<a class="dropdown-item" href="http://m.me/1436330719989547/"><i class="fab fa-facebook-messenger mr-3"></i>Messenger</a>
+					<a class="dropdown-item" href="https://api.whatsapp.com/send?phone=393272294014"><i class="fab fa-whatsapp mr-3"></i>Whatsapp</a>
 				</div>
 			</div>
 	</div>	

@@ -13,13 +13,45 @@
 	<br />
 	<br />
 	<div class="container">
-		<div class="jumbotron">
+		<div class="jumbotron small">
 			<footer class="text-center">
 				<!-- Grid row -->
 				<div class="row">
 
+                    <!-- Grid column -->
+                    <div class="col-sm-6 mb-sm-0 mb-3 text-left">
+
+                        <!-- Content -->
+                        <!-- Links -->
+                        <h6 class="text-uppercase font-weight-bold">Contatti</h6>
+
+                        <p><i class="fas fa-map-marker-alt mr-3"></i><a href="https://www.google.com/maps/dir//38.0124333,13.9154977/@38.012433,13.915498,16z?hl=it"> Via Gorgo Lungo, 23, 90010 Gorgo Lungo PA</a></p>
+                        <p><i class="fas fa-envelope mr-3"></i><a href="mailto:lidogorgobeach@gmail.com">lidogorgobeach@gmail.com</a></p>
+                        <p><i class="fas fa-phone mr-3"></i><a href="tel:+393272294014">3272294014</a></p>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="clearfix w-100 d-sm-none pb-3">
+
+                    <!-- Grid column -->
+                    <div class="col-sm-3 mb-sm-0 mb-3 text-left">
+
+                        <!-- Content -->
+                        <!-- Links -->
+                        <h6 class="text-uppercase font-weight-bold">Social</h6>
+
+                        <p><i class="fab fa-facebook-square mr-3"></i><a href="https://www.facebook.com/Lido-Gorgo-Beach-1436330719989547/">Facebook</a></p>
+                        <p><i class="fab fa-facebook-messenger mr-3"></i><a href="http://m.me/1436330719989547/">Messenger</a></p>
+                        <p><i class="fab fa-whatsapp mr-3"></i><a href="https://api.whatsapp.com/send?phone=393272294014">Whatsapp</a></p>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="clearfix w-100 d-sm-none pb-3">
+
 					<!-- Grid column -->
-					<div class="col-sm-6 mt-sm-0 mt-3">
+					<div class="col-sm-3 mt-sm-0 mt-3 text-left">
 
 						<!-- Content -->
 						<h6 class="text-uppercase font-weight-bold">Orari di apertura</h6>
@@ -29,30 +61,17 @@
 					</div>
 					<!-- Grid column -->
 
-					<hr class="clearfix w-100 d-sm-none pb-3">
 
-					<!-- Grid column -->
-					<div class="col-sm-6 mb-sm-0 mb-3 text-left">
 
-						<!-- Content -->
-						<!-- Links -->
-						<h6 class="text-uppercase font-weight-bold">Contatti</h6>
 
-						<p><i class="fas fa-map-marker-alt mr-3"></i><a href="https://www.google.com/maps/dir//38.0124333,13.9154977/@38.012433,13.915498,16z?hl=it"> Via Gorgo Lungo, 23, 90010 Gorgo Lungo PA</a></p>
-						<p><i class="fas fa-envelope mr-3"></i><a href="mailto:lidogorgobeach@gmail.com">lidogorgobeach@gmail.com</a></p>
-						<p><i class="fas fa-phone mr-3"></i><a href="tel:+393272294015">3272294015</a></p>
-						<p><i class="fab fa-facebook-square mr-3"></i><a href="https://www.facebook.com/Lido-Gorgo-Beach-1436330719989547/">Facebook</a></p>
-
-					</div>
-					<!-- Grid column -->
 
 				</div>
 				<!-- Grid row -->
 
-		<!-- Footer Text -->
-		<br />
-		<p>Powered by Marco La Martina</p>
-		<p>© 2020 Copyright</p>
+		        <!-- Footer Text -->
+                <br />
+		        <p>Powered by Marco La Martina</p>
+		        <p>© 2020 Copyright</p>
 			</footer>
 		</div>
 	</div>
