@@ -1,4 +1,12 @@
-$(document).ready(function() {
+
+var ruolo;
+
+/**
+ * Setta il ruolo e imposta la barra di ricerca
+ * @param r
+ */
+function init(r) {
+	ruolo=r;
 	richiediOrdini();
 	
 	$("#search").on("keyup", function() {
@@ -10,7 +18,7 @@ $(document).ready(function() {
       });
 	
 	
-});
+}
 
 /**
  * Richiede al server, mediante una chiamata ajax, le ordinazioni
@@ -19,7 +27,7 @@ function richiediOrdini() {
 	$.ajax({
 		url: "RichiediOrdini",
 		method: "post",
-		data: {ruolo: "cameriere"},
+		data: {ruolo: ruolo},
 		success: function(data) {
 			mostraOrdini(data);
 			},
@@ -51,14 +59,7 @@ function mostraOrdini(data) {
 		var idutente = data[i].idutente;
 		var nome = data[i].utente_nome;
 		var cognome = data[i].cognome;
-		var prodotto = data[i].nome;
-		var idordinazione = data[i].idordinazione;
-		var quantita = data[i].quantita;
-		var idconto = data[i].idconto;
 		var tavolo = data[i].tavolo;
-		var note = data[i].note;
-		var ingredienti = data[i].ingredienti;
-		var categoria = data[i].categoria;
 		var takeAway = tavolo===0 ? true : false;
 		
 		if($("#cardTable"+tavolo).length==0){
@@ -112,7 +113,7 @@ function mostraOrdini(data) {
 		}
 		
 		if($("#cardTitle"+tavolo+" #span"+idutente).length==0){
-			$("#cardTitle"+tavolo).append('<span id="span'+idutente+'" style="float:right"><small> - '+nome+' '+cognome+' </small></span>');
+			$("#cardTitle"+tavolo).append('<span id="span'+idutente+'" style="float:right"><small>- '+nome+' '+cognome+'&nbsp;</small></span>');
 		}	
 		printTable(data[i]);
 		
@@ -139,7 +140,6 @@ function printTable(data){
 	var prodotto = data.nome;
 	var idordinazione = data.idordinazione;
 	var quantita = data.quantita;
-	var idconto = data.idconto;
 	var tavolo = data.tavolo;
 	var note = data.note;
 	var ingredienti = data.ingredienti;
@@ -167,13 +167,18 @@ function printTable(data){
 }
 
 
-
+/**
+ * Effettua una chiamata ajax per settare come consegnata un'ordinazione
+ * @param idordinazione
+ * @param tavolo
+ * @param idutente
+ */
 function consegnato(idordinazione, tavolo, idutente){
 	$.ajax({
 		url: "CameriereHome",
 		method: "post",
 		data: {idordinazione: idordinazione},
-		success: function(data) {
+		success: function() {
 			$("#modalSucc").modal();
 
 			

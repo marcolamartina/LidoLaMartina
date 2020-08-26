@@ -79,8 +79,7 @@ public class ModificaDati extends HttpServlet {
 			if (email.compareTo(utente.getEmail())!=0) {
 				DBMS.aggiornaEmail(utente.getIdUtente(), email);
 				flag=1;
-				Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , utente.getEmail(), 
-						"Lido Gorgo Beach - Modifica dati", messaggio);
+				Mailer mailer = new Mailer( utente.getEmail(), "Lido Gorgo Beach - Modifica dati", messaggio);
 				Thread thread = new Thread(mailer);
 				thread.start();
 			}
@@ -92,8 +91,7 @@ public class ModificaDati extends HttpServlet {
 				account.setUtente(DBMS.getUtente(utente.getIdUtente()));
 				request.getSession().setAttribute("account", account);
 				
-				Mailer mailer2 = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , email, 
-						"Lido Gorgo Beach - Modifica dati", messaggio);
+				Mailer mailer2 = new Mailer(email, "Lido Gorgo Beach - Modifica dati", messaggio);
 				Thread thread2 = new Thread(mailer2);
 				thread2.start();
 				request.getSession().setAttribute("notify",new Notify(1,"Completato","Modifica effettuata con successo"));
@@ -116,32 +114,30 @@ public class ModificaDati extends HttpServlet {
 	 * @param cognome
 	 * @param email
 	 * @param cellulare
-	 * @return errore
 	 */
 	public static String verificaDatiModificaDati(String nome, String cognome, String email, String cellulare) {
-		String errore = null;
 		
 		if(nome == null || cognome == null || email == null || cellulare == null) {
-			return errore = "I campi sono tutti richiesti.";
+			return "I campi sono tutti richiesti.";
 		}
 		
 		if(nome.replaceAll("\\s+","").contentEquals("") || cellulare.replaceAll("\\s+","").contentEquals("") || cognome.replaceAll("\\s+","").contentEquals("") || 
 				email.replaceAll("\\s+","").contentEquals("") )
-			return errore = "I campi sono tutti richiesti.";
+			return "I campi sono tutti richiesti.";
 		
 		String regex = "^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$";
 		if(!nome.matches(regex))
-			return errore = "Il nome non rispetta il formato richiesto.";
+			return "Il nome non rispetta il formato richiesto.";
 		
 		if(!cognome.matches(regex))
-			return errore ="Il cognome non rispetta il formato richiesto.";
+			return "Il cognome non rispetta il formato richiesto.";
 		
 		regex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$";
 		if(!email.matches(regex))
-			return errore = "L'email non rispetta il formato richiesto.";
+			return "L'email non rispetta il formato richiesto.";
 		
 		
-		return errore;
+		return null;
 	}
 
 }

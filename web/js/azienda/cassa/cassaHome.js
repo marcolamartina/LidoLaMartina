@@ -168,7 +168,11 @@ function printTable(id, bar, spiaggia, idutente){
 	});
 }
 
-
+/**
+ * Aggiorna il totale
+ * @param id
+ * @param old_tot
+ */
 function aggiornaTotale(id, old_tot){
 	var totale, sconto, suppl;
 
@@ -192,7 +196,12 @@ function aggiornaTotale(id, old_tot){
 }
 
 
-
+/**
+ * Paga il conto mediante una richiesta ajax
+ * @param id
+ * @param idutente
+ * @param totale
+ */
 function paga(id, idutente, totale){
 	$.ajax({
 		url: "CassaHome",

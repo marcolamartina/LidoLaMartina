@@ -1,5 +1,6 @@
+<%@ page import="utils.Mailer" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+		 pageEncoding="UTF-8"%>
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 response.setHeader("Pragma","no-cache");
 response.setDateHeader ("Expires", 0); %>
@@ -12,13 +13,12 @@ response.setDateHeader ("Expires", 0); %>
 <link rel="icon" href="img/logo.jpg" type="image/jpg" />
 
 <!-- CSS only -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<link rel="stylesheet" href="bootstrap-4.1.3-dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="fontawesome-free-5.14.0-web/css/all.css">
 
 <!-- JS, Popper.js, and jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="jquery/jquery-3.5.1.min.js"></script>
+<script src="bootstrap-4.1.3-dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="js/generale/welcome.js"></script>
 <script src="js/generale/spiaggiaMappa.js"></script>
@@ -31,17 +31,17 @@ response.setDateHeader ("Expires", 0); %>
 	
 	<div class="jumbotron">
 		<h1>Gorgo Beach</h1>
-		<p>A pochi km da Cefalù, il lido Gorgo Beach offre un'ottima location, ottimi lettini in tela, ombrelloni ampi. Al bar splendide e gustose insalate, panini e quant'altro. Prezzi onesti, siete in Sicilia, ossia in Paradiso.</p>
+		<p>A pochi km da Cefalù, il lido Gorgo Beach offre un'ottima location, comodi lettini e ombrelloni ampi. Al bar splendide e gustose insalate, panini e quant'altro. Prezzi onesti, siete in Sicilia, ossia in Paradiso.</p>
 		<p>Registrati ed effettua l'accesso per potere prenotare le postazioni e le sdraio, ma anche per prenotare cibo e bibite durante la tua visita.</p>	
 		<p style="display: inline">Per qualsiasi esigenza </p>
 			<div style="display: inline" class="dropdown">
 				<a href="" data-toggle="dropdown">contattaci</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="mailto:lidogorgobeach@gmail.com"><i class="fas fa-envelope mr-3"></i>lidogorgobeach@gmail.com</a>
-					<a class="dropdown-item" href="tel:+393272294014"><i class="fas fa-phone mr-3"></i>3272294014</a>
+					<a class="dropdown-item" href="mailto:<%=Mailer.getIndirizzoEmail()%>"><i class="fas fa-envelope mr-3"></i><%=Mailer.getIndirizzoEmail()%></a>
+					<a class="dropdown-item" href="tel:+39<%=Mailer.getCellulare()%>"><i class="fas fa-phone mr-3"></i><%=Mailer.getCellulare()%></a>
 					<a class="dropdown-item" href="https://www.facebook.com/Lido-Gorgo-Beach-1436330719989547/"><i class="fab fa-facebook-square mr-3"></i>Facebook</a>
 					<a class="dropdown-item" href="http://m.me/1436330719989547/"><i class="fab fa-facebook-messenger mr-3"></i>Messenger</a>
-					<a class="dropdown-item" href="https://api.whatsapp.com/send?phone=393272294014"><i class="fab fa-whatsapp mr-3"></i>Whatsapp</a>
+					<a class="dropdown-item" href="https://api.whatsapp.com/send?phone=39<%=Mailer.getCellulare()%>"><i class="fab fa-whatsapp mr-3"></i>Whatsapp</a>
 				</div>
 			</div>
 	</div>	

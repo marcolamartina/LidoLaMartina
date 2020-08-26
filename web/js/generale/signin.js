@@ -2,6 +2,10 @@
  * Verifica la correttezza dei campi nel form di registrazione, in modo che il cliente inserisca 
  * dati che rispettino il formato richiesto prima di inviarli al server.
  */
+
+/**
+ * Valida la password
+ */
 function validatePassword() {
 	var regex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
 	var messaggio = "La password deve contenere almeno 8 caratteri, di cui un carattere minuscolo, un carattere maiuscolo e un numero";
@@ -21,6 +25,9 @@ function validatePassword() {
 
 }
 
+/**
+ * Valida il cellulare
+ */
 function validateCel() {
 	var regex = new RegExp("^([0|\+][0-9]{1,5})?([3][0-9]{9})$");
 	var messaggio = "Inserire un numero di telefono corretto";
@@ -40,6 +47,9 @@ function validateCel() {
 
 }
 
+/**
+ * Valida l'indirizzo email
+ */
 function validateEmail() {
 	var regex = new RegExp("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$");
 	var messaggio = "Inserire un indirizzo email corretto";
@@ -59,6 +69,9 @@ function validateEmail() {
 
 }
 
+/**
+ * Valida il nome
+ */
 function validateName() {
 	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
 	var messaggio = "Inserire un nome corretto";
@@ -78,7 +91,9 @@ function validateName() {
 
 }
 
-
+/**
+ * Valida il cognome
+ */
 function validateSurname() {
 	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
 	var messaggio = "Inserire un cognome corretto";
@@ -99,8 +114,10 @@ function validateSurname() {
 }
 
 
-
-
+/**
+ * Valida il campo di conferma password
+ * @returns {boolean}
+ */
 function validatePasswordConf() {
 	var messaggio = "Le password non corrispondono";
 	

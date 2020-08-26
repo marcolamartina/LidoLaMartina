@@ -1,3 +1,7 @@
+/**
+ * Valida un nome
+ * @returns {boolean}
+ */
 function validateName() {
 	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
 	var messaggio = "Inserire un nome corretto";
@@ -19,7 +23,10 @@ function validateName() {
 
 }
 
-
+/**
+ * Valida un cognome
+ * @returns {boolean}
+ */
 function validateSurname() {
 	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
 	var messaggio = "Inserire un cognome corretto";
@@ -45,6 +52,9 @@ $(document).ready(function() {
 	$("#containerTabella").hide();
 });
 
+/**
+ * Effettua una chiamata ajax per cercare un account
+ */
 function searchAccount(){
 	if(validateSurname() && validateName()){
 		$.ajax({
@@ -73,7 +83,7 @@ function mostraAccount(data){
 	}
 	$("#nessunAccount").hide();
 	$("#containerTabella").show();
-	for(i=0; i<data.length; i++){
+	for(var i=0; i<data.length; i++){
 		var utente=data[i];
 		if($("#info" + utente.idutente).length == 0){
 			var checkbox_bagnino='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkBagnino'+utente.idutente+'" name="Bagnino" value="'+utente.idutente+'"></div></td>';

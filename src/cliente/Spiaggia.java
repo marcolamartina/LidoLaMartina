@@ -86,8 +86,7 @@ public class Spiaggia extends ClienteHome {
                         messaggio+="<br>Sdraio: " + sdraio + "<br><hr style='width:40%; float:left'></hr>";
                     }
                     messaggio+="<br><br>Lo staff del lido</p>";
-                    Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , utente.getEmail(),
-                            "Lido Gorgo Beach - Prenotazione", messaggio);
+                    Mailer mailer = new Mailer( utente.getEmail(), "Lido Gorgo Beach - Prenotazione", messaggio);
                     Thread thread = new Thread(mailer);
                     thread.start();
 

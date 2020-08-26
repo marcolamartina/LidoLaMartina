@@ -70,8 +70,7 @@ public class PasswordDimenticata extends HttpServlet {
 				+ "Ti invitiamo a scegliere una password complessa per mantenere sicuro il tuo account."
 				+ "<br>A presto!<br><br>Lo staff del lido</p>";
 			
-			Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , email, 
-					"Lido Gorgo Beach - Richiesta recupero password", messaggio);
+			Mailer mailer = new Mailer( email, "Lido Gorgo Beach - Richiesta recupero password", messaggio);
 			Thread thread = new Thread(mailer);
 			thread.start();
 			

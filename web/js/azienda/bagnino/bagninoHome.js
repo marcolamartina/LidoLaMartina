@@ -2,8 +2,8 @@ var sdraioMax;
 
 $(document).ready(function() {
     $("#prezzi").remove();
-    richiediPostazioni();
     sdraioMax=parseInt($("#sdraioBattigia").text());
+    richiediPostazioni();
     $("#date").change(aggiornaMappa);
     var date=new Date();
     var string_date=date.getFullYear()+'-';
@@ -26,11 +26,12 @@ $(document).ready(function() {
 
     });
 
-    aggiornaMappa();
-
 
 });
 
+/**
+ * Aggiorna la mappa delle postazioni
+ */
 function aggiornaMappa(){
     $.ajax({
         url: "BagninoHome",
@@ -51,12 +52,19 @@ function aggiornaMappa(){
     }, 90000);
 }
 
+/**
+ * Resetta la mappa delle postazioni
+ */
 function resetMappa(){
     $(".postazione").css("background-color", "white");
     $(".postazione").removeAttr("data-original-title");
     $("#spiaggiaTableBody").empty();
 }
 
+/**
+ * Setta le postazioni prenotate o occupate
+ * @param data
+ */
 function setPostazioni(data){
     resetMappa();
     var sdraio=0;
@@ -115,6 +123,7 @@ function richiediPostazioni() {
 
         success: function(data) {
             mostraMappa(data);
+            aggiornaMappa();
         },
         error: function() {
             $("#modalErr").modal();
@@ -129,7 +138,7 @@ function mostraMappa(data) {
     var max_x=1;
     var max_y=1;
 
-    for(i=0; i<data.length; i++){
+    for(var i=0; i<data.length; i++){
         var numero=data[i].numero;
         var x=parseInt(data[i].x);
         var y=parseInt(data[i].y);

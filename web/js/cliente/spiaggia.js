@@ -4,11 +4,12 @@ var sdraioMax;
 $(document).ready(init);
 
 function init(){
+
     $("#conferma").hide();
     $("#sdraio").change(checkButtonVisibility);
     $("#legenda").append('<i class="fa fa-square" aria-hidden="true" style="color: green; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"></i><small> Selezionato</small><br />');
+    sdraioMax=parseInt($("#sdraioBattigia").text());
     richiediPostazioni();
-
     $("#date").change(aggiornaMappa);
     var date=new Date();
     var string_date=date.getFullYear()+'-';
@@ -26,6 +27,9 @@ function init(){
 
 }
 
+/**
+ * Aggiorna la mappa delle postazioni
+ */
 function aggiornaMappa(){
 
     $.ajax({
@@ -43,15 +47,22 @@ function aggiornaMappa(){
 }
 
 
-
+/**
+ * Resetta la mappa delle postazioni
+ */
 function resetMappa(){
     $(".postazione").css("background-color", "white");
     $(".postazione").addClass("free");
     $(".postazione").removeClass("selected");
     $(".postazione").css("cursor", "");
     $("#conferma").hide();
+    $("#totale").hide();
 }
 
+/**
+ * Setta le postazioni prenotate o occupate
+ * @param data
+ */
 function setPostazioni(data){
     resetMappa();
     var sdraio=0;
@@ -94,7 +105,6 @@ function richiediPostazioni() {
         data: {postazioni: "true"},
         success: function(data) {
             mostraMappa(data);
-            sdraioMax=parseInt($("#sdraioBattigia").text());
             $(".postazione").click(select);
             aggiornaMappa();
         },
@@ -137,6 +147,9 @@ function mostraMappa(data) {
     $("#mappaLido").append(ingresso);
 }
 
+/**
+ * Imposta una postazione come "selezionata"
+ */
 function select(){
     if($(this).hasClass("free")){
         if($(this).hasClass("selected")){
@@ -156,10 +169,48 @@ function select(){
 
 };
 
+/**
+ * Controlla se il tasto "conferma" va visualizzato
+ */
 function checkButtonVisibility(){
     if($(".selected").length===0 && $("#sdraio").val()==="0"){
         $("#conferma").hide();
+        $("#totale").hide();
     }else{
         $("#conferma").show();
+        $("#totale").show();
+    }
+    aggiornaTotale();
+}
+
+/**
+ * Aggiorna il totale
+ */
+function aggiornaTotale(){
+    var totale=parseFloat(($(".selected").length*getPrezzo())+7*parseInt($("#sdraio").val())).toFixed(2);
+    $("#totale").html("Totale: "+totale+"&euro;")
+}
+
+/**
+ * Ritorna il prezzo di una postazione
+ * @returns {number}
+ */
+function getPrezzo(){
+    switch($("#date").val().substr(5,2)){
+        case "06":
+            return 14.00;
+            break;
+        case "07":
+            return 16.00;
+            break;
+        case "08":
+            return 18.00;
+            break;
+        case "09":
+            return 14.00;
+            break;
+        default:
+            return 14.00;
+            break;
     }
 }

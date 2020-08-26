@@ -51,7 +51,7 @@ function mostraCarrello(data) {
 
 	var totale = 0, content = "";
 		$("#tabellaOrdini").find("tr:gt(0)").remove();
-		for(i=0; i<data.length; i++){
+		for(var i=0; i<data.length; i++){
 			var textnote="";
 			if(data[i].note!=null && data[i].note!=undefined){
 				textnote=data[i].note;
@@ -81,6 +81,10 @@ function mostraCarrello(data) {
 		$("#totaleCarrello").append("Totale: " + totale + "&euro;");
 }
 
+/**
+ * Mostra il campo delle note
+ * @param i
+ */
 function showNote(i){
 	$("#rownote"+i).toggle();
 }
@@ -118,7 +122,7 @@ function aggiornaTotale(){
 		success: function(data) {
 			$("#totaleCarrello").html("Totale: " + parseFloat(data).toFixed(2) + "&euro;");;
 			},
-		error: function(xhr) {
+		error: function() {
 			$("#modalErr").modal();
 		}
 	});
@@ -168,12 +172,15 @@ function rimuoviDalCarrello(i) {
 		});
 }
 
+/**
+ * Conferma un'ordinazione tramite una chiamata ajax
+ */
 function conferma(){
 	$.ajax({
 		url: "Ordina",
 		method: "post",
 		data: {tavolo: $("#tavolo").val()},
-		success: function(data) {
+		success: function() {
 			$("#modalSucc").modal();
 			carrelloVuoto();
 		},

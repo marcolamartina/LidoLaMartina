@@ -198,13 +198,16 @@ function rimuoviDalCarrello(i, idutente) {
 		});
 }
 
+/**
+ * Gestisce la conferma dell'ordinazione e la comunica al server mediante una chiamata ajax.
+ */
 function conferma(idutente){
 	$.ajax({
 		url: "CheckoutCameriere",
 		method: "post",
 		data: {tavolo: $("#tavolo".idutente).val(),
 				idutente: idutente},
-		success: function(data) {
+		success: function() {
 			$("#modalSucc").modal();
 			$("#cardClient"+idutente).empty();
 			$("#cardClient"+idutente).remove();

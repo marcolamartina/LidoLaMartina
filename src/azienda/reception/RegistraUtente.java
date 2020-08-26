@@ -74,8 +74,7 @@ public class RegistraUtente extends ReceptionHome {
                         + "<a href='" + Mailer.getAddress() + request.getContextPath() + "'> visita il nostro sito</a> per usufruire dei nostri servizi."
                         + "<br>Ti auguriamo una buona permanenza nel nostro lido e speriamo di vederti presto! <br><br>"
                         + "Lo staff del lido</p>";
-                Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig", email,
-                        "Lido Gorgo Beach - Benvenuto", messaggio);
+                Mailer mailer = new Mailer(email, "Lido Gorgo Beach - Benvenuto", messaggio);
                 Thread thread = new Thread(mailer);
                 thread.start();
 

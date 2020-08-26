@@ -1,8 +1,8 @@
 var sdraioMax;
 
 $(document).ready(function() {
-    richiediPostazioni();
     sdraioMax=parseInt($("#sdraioBattigia").text());
+    richiediPostazioni();
     $("#date").change(aggiornaMappa);
     var date=new Date();
     var string_date=date.getFullYear()+'-';
@@ -16,7 +16,7 @@ $(document).ready(function() {
     string_date+=date.getDate();
     $("#date").val(string_date);
     $('[type="date"]').prop('min', string_date);
-    aggiornaMappa();
+
 });
 
 function aggiornaMappa(){
@@ -41,11 +41,17 @@ function aggiornaMappa(){
 }
 
 
-
+/**
+ * Resetta la mappa delle postazioni
+ */
 function resetMappa(){
     $(".postazione").css("background-color", "white");
 }
 
+/**
+ * Setta le postazioni prenotate o occupate
+ * @param data
+ */
 function setPostazioni(data){
     resetMappa();
     var sdraio=0;
@@ -72,10 +78,10 @@ function richiediPostazioni() {
     $.ajax({
         url: "SpiaggiaMappa",
         method: "post",
-
         data: {postazioni: "true"},
         success: function(data) {
             mostraMappa(data);
+            aggiornaMappa();
         },
         error: function() {
             $("#modalErr").modal();

@@ -99,8 +99,7 @@ public class ReimpostaPassword extends HttpServlet {
 					+ "<a href=\"mailto:lidogorgobeach@gmail.com\">scrivici</a> se non sei stato tu a modificare la password."
 					+ "<br>Ti auguriamo una buona permanenza nel nostro lido e speriamo di vederti presto! <br><br>"
 					+ "Lo staff del lido</p>";
-			Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , email, 
-					"Lido Gorgo Beach - Password reimpostata", messaggio);
+			Mailer mailer = new Mailer( email, "Lido Gorgo Beach - Password reimpostata", messaggio);
 			Thread thread = new Thread(mailer);
 			thread.start();
 			

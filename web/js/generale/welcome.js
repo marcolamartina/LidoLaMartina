@@ -24,7 +24,10 @@ function creaProdotti(){
 }
 
 
-
+/**
+ * Crea l'elenco dei prodotti
+ * @param arr
+ */
 function parsingProdotti(arr) {
 	for(var i = 0; i < arr.length; i++) {
 		var categoria=arr[i].categoria;

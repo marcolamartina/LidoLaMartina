@@ -68,16 +68,12 @@
 				    	<li class="nav-item dropdown">
 						    <a class="nav-link" href="#" data-toggle="dropdown"><i class="fa fa-user"></i> Account</a>
 						    <div class="dropdown-menu">
-						      <span class="dropdown-item-text disabled">${account.utente.nome} ${account.utente.cognome}</span>
+							  <small><span class="dropdown-item-text disabled">${account.utente.nome} ${account.utente.cognome}</span></small>
 						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Conto">Conto</a>
-						      <div class="dropdown-divider"></div>
 							  <a class="dropdown-item" href="Prenotazioni">Prenotazioni</a>
-							  <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="StoricoPagamenti">Storico pagamenti</a>
-						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Profile">Profilo</a>
-						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Logout">Logout</a>
 					
 						    </div>
@@ -97,7 +93,6 @@
 						   
 						    <div class="dropdown-menu">
 						      <a class="dropdown-item" href="Login">Accedi</a>
-						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Signin">Registrati</a>
 						    </div>
 						</li>

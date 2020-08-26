@@ -15,6 +15,10 @@ $(document).ready(function() {
 	aggiornaIncassi();
 });
 
+
+/**
+ * Aggiorna gli incassi mediante una chiamata ajax
+ */
 function aggiornaIncassi(){
 	$.ajax({
 		url: "StoricoIncassi",
@@ -29,6 +33,10 @@ function aggiornaIncassi(){
 	});
 }
 
+/**
+ * Setta gli incassi del giorno, settimana, mese e anno
+ * @param data
+ */
 function mostraStoricoIncassi(data){
 	
 	data[0].giorno != undefined ? $("#giorno").html(parseFloat(data[0].giorno).toFixed(2)+"&euro;") : $("#giorno").html("0.00&euro;");

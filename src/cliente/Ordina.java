@@ -63,8 +63,7 @@ public class Ordina extends ClienteHome {
 					+ " allontanarti dal tavolo nei prossimi minuti.<br>Qui di seguito riportiamo i dettagli del"
 					+ " tuo ordine, visibili anche selezionando nel nostro sito.</p>"
 					+ "<h2>Resoconto ordine:</h2>" + carrello.restituisciProdotti() + "<br />Lo staff del lido";
-				Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , utente.getEmail(), 
-						"Lido Gorgo Beach - Ordine Carrello", messaggio);
+				Mailer mailer = new Mailer( utente.getEmail(), "Lido Gorgo Beach - Ordine Carrello", messaggio);
 				Thread thread = new Thread(mailer);
 				thread.start();
 				carrello.svuotaCarrello();

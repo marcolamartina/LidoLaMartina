@@ -1,3 +1,4 @@
+<%@ page import="utils.Mailer" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 		 pageEncoding="UTF-8"%>
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -27,8 +28,8 @@
                         <h6 class="text-uppercase font-weight-bold">Contatti</h6>
 
                         <p><i class="fas fa-map-marker-alt mr-3"></i><a href="https://www.google.com/maps/dir//38.0124333,13.9154977/@38.012433,13.915498,16z?hl=it"> Via Gorgo Lungo, 23, 90010 Gorgo Lungo PA</a></p>
-                        <p><i class="fas fa-envelope mr-3"></i><a href="mailto:lidogorgobeach@gmail.com">lidogorgobeach@gmail.com</a></p>
-                        <p><i class="fas fa-phone mr-3"></i><a href="tel:+393272294014">3272294014</a></p>
+                        <p><i class="fas fa-envelope mr-3"></i><a href="mailto:<%=Mailer.getIndirizzoEmail()%>"><%=Mailer.getIndirizzoEmail()%></a></p>
+                        <p><i class="fas fa-phone mr-3"></i><a href="tel:+39<%=Mailer.getCellulare()%>"><%=Mailer.getCellulare()%></a></p>
 
                     </div>
                     <!-- Grid column -->
@@ -44,7 +45,7 @@
 
                         <p><i class="fab fa-facebook-square mr-3"></i><a href="https://www.facebook.com/Lido-Gorgo-Beach-1436330719989547/">Facebook</a></p>
                         <p><i class="fab fa-facebook-messenger mr-3"></i><a href="http://m.me/1436330719989547/">Messenger</a></p>
-                        <p><i class="fab fa-whatsapp mr-3"></i><a href="https://api.whatsapp.com/send?phone=393272294014">Whatsapp</a></p>
+                        <p><i class="fab fa-whatsapp mr-3"></i><a href="https://api.whatsapp.com/send?phone=39<%=Mailer.getCellulare()%>">Whatsapp</a></p>
 
                     </div>
                     <!-- Grid column -->

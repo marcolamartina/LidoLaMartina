@@ -567,14 +567,16 @@ public class DBMS {
 		JSONArray pagamenti=new JSONArray();
 		JSONArray ordinazioni;
 		JSONArray prenotazioni;
+		Date oggi=Date.valueOf(LocalDate.now().toString());
 		List <Date> conti=new ArrayList<>();
 		String query, query1, query2;
 
-		query = "SELECT DISTINCT Data FROM Conto WHERE Pagato=? AND Ref_IDUtente=? ORDER BY Data DESC";
+		query = "SELECT DISTINCT Data FROM Conto WHERE Pagato=? AND Ref_IDUtente=? AND Data<=? ORDER BY Data DESC";
 		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
 			statement.setBoolean(1, pagato);
 			statement.setInt(2, IDUtente);
+			statement.setDate(3,oggi);
 			ResultSet result = statement.executeQuery();
 			while (result.next()) {
 				conti.add(result.getDate("Data"));
@@ -712,12 +714,14 @@ public class DBMS {
 	 */
 	public static JSONArray getConti(boolean pagato) throws SQLException{
 		JSONArray JSONconti=new JSONArray();
+		Date oggi=Date.valueOf(LocalDate.now().toString());
 		Map <Integer, List<Date>> conti=new LinkedHashMap<>();
 		String query1, query2, query3;
 
-		query1 = "SELECT DISTINCT Ref_IDUtente, Data FROM Conto WHERE Pagato=? ORDER BY Data DESC";
+		query1 = "SELECT DISTINCT Ref_IDUtente, Data FROM Conto WHERE Pagato=? AND Data<=? ORDER BY Data DESC";
 		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
 			statement.setBoolean(1, pagato);
+			statement.setDate(2,oggi);
 			ResultSet result = statement.executeQuery();
 			while (result.next()) {
 				int id = result.getInt("Ref_IDUtente");
@@ -841,7 +845,7 @@ public class DBMS {
 				statement2.setDate(2, Date.valueOf(domenica.toString()));
 				ResultSet result2 = statement2.executeQuery();
 				if (result2.next()) {
-					storico.put(JSONConverter.convertToJSONObject(result));
+					storico.put(JSONConverter.convertToJSONObject(result2));
 				}
 				result2.close();
 			}
@@ -861,7 +865,7 @@ public class DBMS {
 				statement4.setDate(1, Date.valueOf(data.toString()));
 				ResultSet result4 = statement4.executeQuery();
 				if (result4.next()) {
-					storico.put(JSONConverter.convertToJSONObject(result));
+					storico.put(JSONConverter.convertToJSONObject(result4));
 				}
 				result4.close();
 

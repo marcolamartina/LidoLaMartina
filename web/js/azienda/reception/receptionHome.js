@@ -4,8 +4,8 @@ var oggi;
 
 $(document).ready(function() {
     $("#prezzi").remove();
-    richiediPostazioni();
     sdraioMax=parseInt($("#sdraioBattigia").text());
+    richiediPostazioni();
     $("#date").change(aggiornaMappa);
     var date=new Date();
     var string_date=date.getFullYear()+'-';
@@ -28,8 +28,6 @@ $(document).ready(function() {
         });
 
     });
-
-    aggiornaMappa();
 
 
 });
@@ -57,6 +55,8 @@ function aggiornaMappa(){
 function resetMappa(){
     $(".postazione").css("background-color", "white");
     $(".postazione").removeAttr("data-original-title");
+    $(".postazione").removeClass("occupata");
+    $(".postazione").removeClass("prenotata");
     $("#spiaggiaTableBody").empty();
 }
 
@@ -77,10 +77,12 @@ function setPostazioni(data){
         if(data[i].numero!==0){
             if(data[i].occupata===true){
                 colore="red";
-                button='<button name="'+data[i].idprenotazione+'" class="btn btn-occupata btn-sm">';
+                $("#postazione"+data[i].numero).addClass("occupata");
+                button='<button id="button'+data[i].numero+'" name="'+data[i].idprenotazione+'" class="btn btn-occupata btn-sm">';
             }else{
                 colore="yellow";
-                button='<button name="'+data[i].idprenotazione+'" class="btn btn-prenotata btn-sm">';
+                $("#postazione"+data[i].numero).addClass("prenotata");
+                button='<button id="button'+data[i].numero+'" name="'+data[i].idprenotazione+'" class="btn btn-prenotata btn-sm">';
             }
             $("#postazione"+data[i].numero).css("background-color", colore);
             $("#postazione"+data[i].numero).attr("data-toggle","tooltip");
@@ -90,30 +92,26 @@ function setPostazioni(data){
 
         var numero=data[i].numero === undefined ? "" : data[i].numero;
         var num_sdraio=data[i].sdraio === 0 ? "" : data[i].sdraio;
-        var button_sdraio="";
         var button_postazione="";
-        if(data[i].sdraio !== 0){
-            button_sdraio=button+num_sdraio+'</button>';
-        }
         if(data[i].numero !== undefined){
             button_postazione=button+numero+'</button>';
         }
         if($("#rowSpiaggia"+data[i].idutente).length===0){
-            var riga='<tr id="rowSpiaggia'+data[i].idutente+'"><td><button id="info'+data[i].idutente+'" class="btn btn-link" onclick=\'getInfo("'+data[i].idutente+'","'+data[i].nome+'","'+data[i].cognome+'","'+data[i].email+'","'+data[i].cellulare+'")\'>'+data[i].nome+' '+data[i].cognome+'</td><td class="sdraioCol">'+button_sdraio+'</td><td class="postazioneCol">'+button_postazione+'</td></tr>';
+            var riga='<tr id="rowSpiaggia'+data[i].idutente+'"><td><button id="info'+data[i].idutente+'" class="btn btn-link" onclick=\'getInfo("'+data[i].idutente+'","'+data[i].nome+'","'+data[i].cognome+'","'+data[i].email+'","'+data[i].cellulare+'")\'>'+data[i].nome+' '+data[i].cognome+'</td><td class="sdraioCol">'+num_sdraio+'</td><td class="postazioneCol">'+button_postazione+'</td></tr>';
             $("#spiaggiaTableBody").append(riga);
         } else {
             if(numero!=="")$("#rowSpiaggia"+data[i].idutente+" .postazioneCol").append(" "+button_postazione);
             if(num_sdraio!==""){
                 var oldSdraio=$("#rowSpiaggia"+data[i].idutente+" .sdraioCol").text() === "" ? 0 : $("#rowSpiaggia"+data[i].idutente+" .sdraioCol").text();
                 var newSdraio=parseInt(oldSdraio)+parseInt(num_sdraio);
-                button_sdraio=button+newSdraio+'</button>';
-                $("#rowSpiaggia"+data[i].idutente+" .sdraioCol").html(button_sdraio);
+
+                $("#rowSpiaggia"+data[i].idutente+" .sdraioCol").html(newSdraio);
             }
         }
     }
 
     if($("#date").val()===oggi){
-        $(".btn-occupata, .btn-prenotata").click(setOccupata);
+        $(".btn-occupata, .btn-prenotata, .occupata, .prenotata").click(setOccupata);
     }else{
         $(".btn-occupata, .btn-prenotata").attr("disabled","disabled");
     }
@@ -123,26 +121,32 @@ function setPostazioni(data){
 
 }
 
-
+/**
+ * Imposta una postazione come occupata e lo comunica al server tramite una chiamata ajax
+ */
 function setOccupata(){
     var occupata; // true se si vuole rendere occupata una postazione o false se la si vuole fare ritornare prenotata
-    if($(this).hasClass("btn-prenotata")){
+    if($(this).hasClass("btn-prenotata") || $(this).hasClass("prenotata")){
         occupata=true;
-    }else if($(this).hasClass("btn-occupata")){
+    }else if($(this).hasClass("btn-occupata") || $(this).hasClass("occupata")){
         occupata=false;
     }
-    var button=$(this);
+    var button=$("#button"+$(this).text());
+    var postazione=$("#postazione"+$(this).text());
+
 
     var color;
     $.ajax({
         url: "ReceptionHome",
         method: "post",
-        data: {prenotazione: $(this).attr("name"),
+        data: {prenotazione: button.attr("name"),
                 occupata: occupata},
         success: function() {
             if(occupata==true){
                 button.removeClass("btn-prenotata");
                 button.addClass("btn-occupata");
+                postazione.removeClass("prenotata");
+                postazione.addClass("occupata");
                 if(button.parent().hasClass("postazioneCol")){
                    color="red";
                 }
@@ -150,11 +154,13 @@ function setOccupata(){
             }else{
                 button.addClass("btn-prenotata");
                 button.removeClass("btn-occupata");
+                postazione.addClass("prenotata");
+                postazione.removeClass("occupata");
                 if(button.parent().hasClass("postazioneCol")){
                     color="yellow";
                 }
             }
-            $("#postazione"+button.text()).css("background-color", color);
+            postazione.css("background-color", color);
         },
         error: function() {
             $("#modalErr").modal();
@@ -175,6 +181,7 @@ function richiediPostazioni() {
 
         success: function(data) {
             mostraMappa(data);
+            aggiornaMappa();
         },
         error: function() {
             $("#modalErr").modal();
@@ -189,7 +196,7 @@ function mostraMappa(data) {
     var max_x=1;
     var max_y=1;
 
-    for(i=0; i<data.length; i++){
+    for(var i=0; i<data.length; i++){
         var numero=data[i].numero;
         var x=parseInt(data[i].x);
         var y=parseInt(data[i].y);

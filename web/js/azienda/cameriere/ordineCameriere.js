@@ -1,3 +1,7 @@
+/**
+ * Valida un nome
+ * @returns {boolean}
+ */
 function validateName() {
 	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
 	var messaggio = "Inserire un nome corretto";
@@ -19,7 +23,10 @@ function validateName() {
 
 }
 
-
+/**
+ * Valida un cognome
+ * @returns {boolean}
+ */
 function validateSurname() {
 	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
 	var messaggio = "Inserire un cognome corretto";
@@ -41,6 +48,9 @@ function validateSurname() {
 
 }
 
+/**
+ * Effettua una chiamata ajax per cercare un account
+ */
 function searchAccount(){
 	if(validateSurname() && validateName()){
 		$.ajax({
@@ -88,6 +98,9 @@ function mostraAccount(data){
 
 }
 
+/**
+ * Crea il menu
+ */
 function creaMenu(){
 	if($("#menu tr").length==0){
 		creaProdotti();
@@ -141,7 +154,10 @@ function creaProdotti(){
 	
 }
 
-
+/**
+ * Crea l'elenco dei prodotti
+ * @param arr
+ */
 function parsingProdotti(arr) { 
 	var i;
 	var j;
@@ -177,11 +193,18 @@ function parsingProdotti(arr) {
 	}
 }
 
-
+/**
+ * Mostra il campo delle note
+ * @param i
+ */
 function showNote(i){
 	$("#rownote"+i).toggle();
 }
 
+/**
+ * Aggiunge il prodotto al carrello mediante una chiamata ajax
+ * @param i
+ */
 function addToChart(i){
 	$.ajax({
 		url: "OrdineCameriere",

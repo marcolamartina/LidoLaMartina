@@ -49,7 +49,8 @@ function mostraPrenotazioni(data) {
                 + '<tbody id="body'+idconto+'">'
                 + '</tbody>'
                 + '</table>'
-                + '</div>'
+                + '<h2 id="totaleConto'+idconto+'" style="float:right">Totale: 0.00&euro;</h2>'
+                + '<br /></div>'
                 + '</div>'
                 + '</div>'
                 + '</div>';
@@ -58,24 +59,29 @@ function mostraPrenotazioni(data) {
 
         }
 
-        var costo="", content="";
+        var costo="", content="", totale=0;
+        var oldtotale=parseFloat($("#totaleConto"+idconto).text().substr(8,$("#totaleConto"+idconto).text().length-1));
         var button_trash='<td class="col-sm-1"><button id="button'+idprenotazione+'" name="button'+idconto+'" class="btn btn-danger btn-sm""><i class="fa fa-trash"></i></button></td>';
         if(data[i].sdraio>0){
             costo = parseFloat(parseFloat(data[i].prezzo)* parseFloat(data[i].sdraio)).toFixed(2);
             var quantity='<td class="col-sm-1">x'+data[i].sdraio+'</td>';
-            content += '<tr id="row'+idprenotazione+'"> <td class="col-sm-6">Sdraio</td>' + quantity +'<td class="col-sm-1">'
+            content += '<tr id="row'+idprenotazione+'"> <td class="col-sm-6">Sdraio</td>' + quantity +'<td class="col-sm-1" id="prezzo'+idprenotazione+'">'
                 + costo + '&euro;</td>'+button_trash+'</tr><tr id="hr'+idprenotazione+'"><td colspan="4"><hr /></td></tr>';
+            totale = parseFloat(parseFloat(costo) + parseFloat(oldtotale)).toFixed(2);
 
         }
         if(data[i].numero>0){
             costo = parseFloat(data[i].prezzo).toFixed(2);
-            content += '<tr id="row'+idprenotazione+'"> <td class="col-sm-6">Postazione n°'+data[i].numero+'</td><td></td><td class="col-sm-1">'
+            content += '<tr id="row'+idprenotazione+'"> <td class="col-sm-6">Postazione n°'+data[i].numero+'</td><td></td><td class="col-sm-1" id="prezzo'+idprenotazione+'">'
                 + costo + '&euro;</td>'+button_trash+'</tr><tr id="hr'+idprenotazione+'"><td colspan="4"><hr /></td></tr>';
+            totale = parseFloat(parseFloat(costo) + parseFloat(oldtotale)).toFixed(2);
         }
 
         $("#body"+idconto).append(content);
         $("#button"+idprenotazione).click(rimuoviPrenotazione);
+        $("#totaleConto"+idconto).html("Totale: " + totale + "&euro;");
     }
+
     $("#accordion .collapse").first().collapse("show");
 }
 
@@ -93,6 +99,10 @@ function rimuoviPrenotazione() {
             idconto: idconto},
         success: function() {
             $("#modalSucc").modal();
+            var prezzo=parseFloat($("#prezzo"+idprenotazione).text().substr(0,$("#prezzo"+idprenotazione).text().length-1));
+            var oldtotale=parseFloat($("#totaleConto"+idconto).text().substr(8,$("#totaleConto"+idconto).text().length-1));
+            var newtotale=parseFloat(oldtotale-prezzo).toFixed(2);
+            $("#totaleConto"+idconto).html("Totale: " + newtotale + "&euro;");
             $("#row"+idprenotazione).remove();
             $("#hr"+idprenotazione).remove();
             if($("#body"+idconto+" tr").length===0){

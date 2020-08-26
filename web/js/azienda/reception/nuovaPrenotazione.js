@@ -1,5 +1,8 @@
 
-
+/**
+ * Valida un nome
+ * @returns {boolean}
+ */
 function validateName() {
     var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
     var messaggio = "Inserire un nome corretto";
@@ -21,7 +24,10 @@ function validateName() {
 
 }
 
-
+/**
+ * Valida un cognome
+ * @returns {boolean}
+ */
 function validateSurname() {
     var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
     var messaggio = "Inserire un cognome corretto";
@@ -43,6 +49,9 @@ function validateSurname() {
 
 }
 
+/**
+ * Effettua una chiamata ajax per cercare un account
+ */
 function searchAccount(){
     if(validateSurname() && validateName()){
         $.ajax({
@@ -91,7 +100,9 @@ function mostraAccount(data){
 
 }
 
+/**
+ * Imposta il campo idutente
+ */
 function setID() {
-    console.log($("#containerRisultati input[type='radio']:checked").attr("value"));
     $("#idutente").val($("#containerRisultati input[type='radio']:checked").attr("value"));
 }

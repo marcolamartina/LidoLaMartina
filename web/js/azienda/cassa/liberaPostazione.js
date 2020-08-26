@@ -87,8 +87,11 @@ function mostraPostazioni(data) {
 }
 
 
-
-
+/**
+ * Libera una postazione mediante una chimata ajax
+ * @param idprenotazione
+ * @param idutente
+ */
 function libera(idprenotazione, idutente){
 	$.ajax({
 		url: "LiberaPostazione",

@@ -30,7 +30,7 @@ function mostraAccountAziendali(data){
 	}
 	$("#nessunAccount").hide();
 	$("#containerTabella").show();
-	for(i=0; i<data.length; i++){
+	for(var i=0; i<data.length; i++){
 		var utente=data[i];
 		if($("#info" + utente.idutente).length === 0){
 			var checkbox_bagnino='<td><div class="form-check"><input type="checkbox" class="form-check-input" id="checkBagnino'+utente.idutente+'" name="Bagnino" value="'+utente.idutente+'"></div></td>';

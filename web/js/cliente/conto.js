@@ -82,7 +82,7 @@ function mostraConti(data) {
  */
 function printTable(id, bar, spiaggia){
 	var totale = 0, content_bar = "", content_spiaggia = "";
-	for(i=0; i<bar.length; i++){
+	for(var i=0; i<bar.length; i++){
 		var quantity='<td class="col-sm-1">x'+bar[i].quantita+'</td>';
 		var costo = parseFloat(parseFloat(bar[i].prezzo)* parseFloat(bar[i].quantita)).toFixed(2);
 		content_bar += '<tr> <td class="col-sm-6">' + bar[i].nome + '<br /><small>('+ bar[i].categoria +')</small></td> ' + quantity +'<td class="col-sm-1">' 
@@ -90,7 +90,7 @@ function printTable(id, bar, spiaggia){
 		totale = parseFloat(parseFloat(costo) + parseFloat(totale)).toFixed(2);
 	}
 	
-	for(i=0; i<spiaggia.length; i++){
+	for(var i=0; i<spiaggia.length; i++){
 		
 		if(spiaggia[i].sdraio>0){
 			var costo = parseFloat(parseFloat(spiaggia[i].prezzo)* parseFloat(spiaggia[i].sdraio)).toFixed(2);

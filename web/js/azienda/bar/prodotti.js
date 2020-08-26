@@ -1,7 +1,8 @@
-$(document).ready(function() {
-	
-	creaSelector();
-	
+
+var ruolo;
+function init(r) {
+	ruolo=r;
+	creaProdotti();
 	
 	/** 
 	 * Al cambio della categoria nel menu a tendina  mostra solo la categoria selezionata.
@@ -31,41 +32,23 @@ $(document).ready(function() {
           });
       });
     
-});
-
-/**
- * Creazione del menu a tendina con le categorie e gli headers delle categorie 
- */
-function creaSelector(){
-	$.ajax({
-		url: "ProdottiBar",
-		method: "post",
-		data: {categorie: "true"},
-		success: function(data) {
-			parsingCategorie(data);
-			creaProdotti();
-			},
-		error: function(xhr) {
-			$("#modalErr").modal();
-		}
-	});
-	
 }
 
 
+
 /**
- * Inserimento dei prodotti
+ * Effettua una chiamata ajax per richiedere i prodotti
  */
 function creaProdotti(){
 	
 	$.ajax({
-		url: "ProdottiBar",
+		url: "Prodotti"+ruolo,
 		method: "post",
 		data: {prodotti: "true"},
 		success: function(data) {
 			parsingProdotti(data);
 			},
-		error: function(xhr) {
+		error: function() {
 			$("#modalErr").modal();
 		}
 	});
@@ -73,31 +56,15 @@ function creaProdotti(){
 }
 
 
-
-function parsingCategorie(arr) { 
-	var out = '<option value="Tutto">Tutto</option>';
-	var i;
-	
-	for(i = 0; i < arr.length; i++) {
-		var categoria=arr[i].categoria;
-		var categoriaId;
-		if (categoria!=null && categoria!=undefined){
-			categoriaId=categoria.replace(" ","").replace("'","");
-		}	
-		out += '<option value="' + categoria + '">' + categoria + '</option>';
-		var content='<div id="'+categoriaId+'Container"><h3>'+categoria+'</h3><div id="'+categoriaId+'"></div>'
-		$("#menu").append(content);
-	}
-	$("#selCategoria").html(out); 
-}
-
-
+/**
+ * Crea l'elenco dei prodotti
+ * @param arr
+ */
 function parsingProdotti(arr) { 
 	var i;
-	var j;
+	$("#selCategoria").html('<option value="Tutto">Tutto</option>');
 	for(i = 0; i < arr.length; i++) {
 		var categoria=arr[i].categoria;
-		var prezzo=parseFloat(arr[i].prezzo).toFixed(2);
 		var categoriaId=categoria.replace(" ","").replace("'","");
 		var content='<div class="form-check">'
 			  		+ '<label class="form-check-label" id="label'+arr[i].idprodotto+'">'
@@ -107,6 +74,14 @@ function parsingProdotti(arr) {
 			content+='<br /><small>'+arr[i].ingredienti+'</small>';
 		}
 		content+='</label><hr /></div>';
+
+		if($("#"+categoriaId).length===0){
+			var out = '<option value="' + categoria + '">' + categoria + '</option>';
+			var content2='<div id="'+categoriaId+'Container"><h3>'+categoria+'</h3><div id="'+categoriaId+'"></div>'
+			$("#menu").append(content2);
+			$("#selCategoria").append(out);
+		}
+
 		$("#"+categoriaId).append(content);
 		checking(arr[i].idprodotto,arr[i].disponibile);
 		
@@ -126,7 +101,7 @@ function parsingProdotti(arr) {
  */
 function setDisponibile(id, flag){ 
 	$.ajax({
-		url: "ProdottiBar",
+		url: "Prodotti"+ruolo,
 		method: "post",
 		data: {id: id,
 				flag: flag},

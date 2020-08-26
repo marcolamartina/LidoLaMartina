@@ -23,27 +23,23 @@ public class Mailer implements Runnable {
 	 * messaggio --> stringa html che contiene il corpo della mail
 	 */
 	private String host;
-	private String indirizzoEmail;
 	private String password;
 	private String indirizzoDestinazione;
 	private String oggetto;
 	private String messaggio;
-	private static String address="http://marcolamartina.duckdns.org:8080";
+	private static String address="http://marcolamartina.duckdns.org";
+	private static String indirizzoEmail="lidogorgobeach@gmail.com";
+	private static String cellulare="3272294014";
 	
 	/**
 	 * Construttore della classe.
-	 * @param host
-	 * @param indirizzoEmail
-	 * @param password
 	 * @param indirizzoDestinazione
 	 * @param oggetto
 	 * @param messaggio
 	 */
-	public Mailer (String host, String indirizzoEmail, String password, String indirizzoDestinazione, 
-			String oggetto, String messaggio) {
-		this.host = host;
-		this.indirizzoEmail = indirizzoEmail;
-		this.password = password;
+	public Mailer (String indirizzoDestinazione, String oggetto, String messaggio) {
+		this.host = "smtp.gmail.com";
+		this.password = "gupzeg-jundI2-muczig";
 		this.indirizzoDestinazione = indirizzoDestinazione;
 		this.oggetto = oggetto;
 		this.messaggio = messaggio;
@@ -98,5 +94,13 @@ public class Mailer implements Runnable {
 	public static String getAddress() {
 		return address;
 	}
-	
-}  
+
+
+	public static String getCellulare() {
+		return cellulare;
+	}
+
+	public static String getIndirizzoEmail() {
+		return indirizzoEmail;
+	}
+}

@@ -37,13 +37,8 @@ public class ProdottiBar extends BarHome {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(checkSession(request, response)) {
 			try {
-				
-				if(request.getParameter("categorie")!=null && request.getParameter("categorie").contentEquals("true")) {
-					response.setContentType("application/json");
-					response.getWriter().println(DBMS.getAllCategorieBar());
-					return;
-				}
-				else if(request.getParameter("prodotti")!=null && request.getParameter("prodotti").contentEquals("true")) {
+
+				if(request.getParameter("prodotti")!=null && request.getParameter("prodotti").contentEquals("true")) {
 					response.setContentType("application/json");
 					response.getWriter().println(DBMS.getAllProdottiBar());
 					return;

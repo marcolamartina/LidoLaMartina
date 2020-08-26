@@ -70,6 +70,8 @@
 <div>
     <h6>Sdraio singole rimaste: <small id="sdraioBattigia"><%=Prenotazione.getSdraioMax()%></small></h6>
 </div>
+<br />
+<br />
 
 
 

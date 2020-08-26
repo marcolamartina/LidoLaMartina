@@ -69,8 +69,7 @@ public class CassaHome extends HttpServlet {
 					+ " il pagamento in data " + now 
 					+ ". Potrai sempre visionare i dettagli del pagamento dalla sezione \"Storico pagamenti\"."
 					+ "<br><br>Lo staff del lido</p>";
-				Mailer mailer = new Mailer("smtp.gmail.com", "lidogorgobeach@gmail.com", "gupzeg-jundI2-muczig" , utente.getEmail(), 
-						"Lido Gorgo Beach - Conferma pagamento", messaggio);
+				Mailer mailer = new Mailer( utente.getEmail(), "Lido Gorgo Beach - Conferma pagamento", messaggio);
 				Thread thread = new Thread(mailer);
 				thread.start();
 			
