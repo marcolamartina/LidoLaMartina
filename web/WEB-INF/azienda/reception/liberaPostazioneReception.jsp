@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gorgo Beach</title>
+    <title>Libera Postazione</title>
     <link rel="icon" href="img/logo.jpg" type="image/jpg" />
 
     <!-- CSS only -->
@@ -20,18 +20,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
-    <script src="js/azienda/reception/receptionHome.js"></script>
-    <style>
-        .btn-occupata{
-            background-color: red;
-            border-color: black;
-        }
+    <script src="js/azienda/cassa/liberaPostazione.js"></script>
 
-        .btn-prenotata{
-            background-color: yellow;
-            border-color: black;
-        }
-    </style>
 
 </head>
 <body>
@@ -39,9 +29,8 @@
 <div class="container">
 
     <div class="jumbotron">
-        <h1>Ciao ${account.utente.nome}!</h1>
-        <p>Da questa sezione potrai vedere lo stato delle postazioni, registrare l'arrivo dei clienti o liberare le postazioni. Potrai anche registrare nuovi clienti così da poter effettuare per loro nuove prenotazioni</p>
-        </p>
+        <h1>Libera postazione</h1>
+        <p>Da questa sezione potrai eseguire il checkout dei clienti in modo da rendere di nuovo disponibile la loro postazione</p>
     </div>
 
     <!-- Pannello "Buttons" -->
@@ -55,24 +44,38 @@
     </div>
 
     <!-- Pannello "Postazioni" -->
-    <%@ include file="/WEB-INF/utils/spiaggiaMappa.jsp"%>
+    <div id="postazioni">
+        <h2 id="postazioniVuote" style="display:none">Non ci sono postazioni da liberare</h2>
+        <br />
+        <input class="form-control" id="search" type="text" placeholder="Cerca..">
+        <br />
+    </div>
 
-    <!-- Pannello "Cerca" -->
-    <input class="form-control" id="search" type="text" placeholder="Cerca..">
-    <br />
-    <table id="spiaggiaTable" class="table table-borderless">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Sdraio</th>
-            <th>Postazioni</th>
-        </tr>
-        </thead>
-        <tbody id="spiaggiaTableBody">
-        </tbody>
-        <div id="modals">
+
+
+    <div class="modal" id="modalSucc">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Operazione completata</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Postazione liberata correttamente
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Chiudi</button>
+                </div>
+
+            </div>
         </div>
-    </table>
+    </div>
 
 </div>
 <%@ include file="/WEB-INF/utils/footer.jsp"%>

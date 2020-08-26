@@ -19,7 +19,7 @@ import model.Notify;
 * Questa servlet intercetta le richieste relative al login.
 * @author Marco La Martina
 */
-@WebServlet("/Login")
+@WebServlet({"/Login", "/login"})
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

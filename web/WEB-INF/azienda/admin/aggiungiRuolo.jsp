@@ -33,14 +33,16 @@ response.setDateHeader ("Expires", 0); %>
 		<h1>Aggiungi account aziendale</h1>
 		<p>Potrai aggiungere un nuovo account aziendale compilando il form sottostante</p>
 	</div>
-	
+
 	<!-- Pannello "Buttons" -->
-       <div>
-       		<a href="AdminHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
-       		<br />
-            <br />
-		</div>
-	
+	<div>
+		<a href="AdminHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
+		<a href="AggiungiRuolo" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-plus"></i> Nuovo account aziendale</button></a>
+		<br />
+		<br />
+	</div>
+
+
 	<!-- Contenitore del form di inserimento account -->
 		<div>
 			<form class="form-horizontal" action="javascript:searchAccount();">
@@ -67,7 +69,7 @@ response.setDateHeader ("Expires", 0); %>
 		
 		
 	<!-- Contenitore della tabella degli account trovati -->	
-		<h2 id="nessunAccount" style="display:none">Non esiste nessun utente che corrisponde ai dati che hai inserito</h2>
+		<h2 id="nessunAccount" style="display:none">Non esiste nessun cliente che corrisponde ai dati che hai inserito</h2>
         <br />
 		<div id="containerTabella" >
         	<div style="width:50%">

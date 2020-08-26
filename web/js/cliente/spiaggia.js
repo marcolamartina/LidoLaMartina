@@ -1,12 +1,14 @@
+
 var sdraioMax;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init(){
     $("#conferma").hide();
     $("#sdraio").change(checkButtonVisibility);
     $("#legenda").append('<i class="fa fa-square" aria-hidden="true" style="color: green; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"></i><small> Selezionato</small><br />');
     richiediPostazioni();
 
-    sdraioMax=parseInt($("#sdraioBattigia").text());
     $("#date").change(aggiornaMappa);
     var date=new Date();
     var string_date=date.getFullYear()+'-';
@@ -20,16 +22,16 @@ $(document).ready(function() {
     string_date+=date.getDate();
     $("#date").val(string_date);
     $('[type="date"]').prop('min', string_date);
-    $(".postazione").click(select);
-    aggiornaMappa();
-});
+
+
+}
 
 function aggiornaMappa(){
 
     $.ajax({
         url: "SpiaggiaMappa",
         method: "post",
-        async:false,
+
         data: {data: $("#date").val()},
         success: function(data) {
             setPostazioni(data);
@@ -89,10 +91,12 @@ function richiediPostazioni() {
     $.ajax({
         url: "SpiaggiaMappa",
         method: "post",
-        async:false,
         data: {postazioni: "true"},
         success: function(data) {
             mostraMappa(data);
+            sdraioMax=parseInt($("#sdraioBattigia").text());
+            $(".postazione").click(select);
+            aggiornaMappa();
         },
         error: function() {
             $("#modalErr").modal();
@@ -118,12 +122,12 @@ function mostraMappa(data) {
         $("#mappaLido").append(content);
     }
     var mare='<div style=" background-color: lightskyblue; grid-row: 1; grid-column: 1 / span '+max_y+';"><small>MARE</small></div>';
-    var battigia='<div style=" background-color: sandybrown; grid-row: 2; grid-column: 1 / span '+max_y+';"><small>BATTIGIA</small></div>';
-    var cabine='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 1 / span 8;"><small>CABINE</small></div>';
-    var wc='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 9 / span 2;"><small>WC</small></div>';
-    var bar='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 11 / span 9; "><small>BAR</small></div>';
-    var pedana='<div style="background-color: palegreen; grid-row: '+(max_x)+'/ span 3; grid-column: 11 / span 9; "><small>PEDANA</small></div>';
-    var ingresso='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 20 / span 8; "><small>INGRESSO</small></div>';
+    var battigia='<div style=" background-color: #F2D16B; grid-row: 2; grid-column: 1 / span '+max_y+';"><small>BATTIGIA</small></div>';
+    var cabine='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 1 / span 8;"><small>CABINE</small></div>';
+    var wc='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 9 / span 2;"><small>WC</small></div>';
+    var bar='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 11 / span 9; "><small>BAR</small></div>';
+    var pedana='<div style="background-color: #B07840; grid-row: '+(max_x)+'/ span 3; grid-column: 11 / span 9; "><small>PEDANA</small></div>';
+    var ingresso='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 20 / span 8; "><small>INGRESSO</small></div>';
     $("#mappaLido").append(mare);
     $("#mappaLido").append(battigia);
     $("#mappaLido").append(cabine);

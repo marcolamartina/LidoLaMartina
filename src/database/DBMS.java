@@ -1,5 +1,6 @@
 package database;
 
+
 import model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,9 +33,8 @@ public class DBMS {
 	 */
 	private static Context context = null;
 	private static DataSource dataSource = null;
-	private static Connection connection = null;
-	private static PreparedStatement statement = null;
-	private static ResultSet result = null;
+
+
 	
 	/**
 	 * Inizializza il context ed il data source per la comunicazione con il database.
@@ -53,22 +53,10 @@ public class DBMS {
 	 * Inizia una connessione con il database.
 	 * @throws SQLException
 	 */
-	public static void startConnection() throws SQLException {
-		connection = dataSource.getConnection();
+	public static Connection connect() throws SQLException {
+		return dataSource.getConnection();
 	}
-	
-	/**
-	 * Chiude il ResultSet (se contiene dei valori), il PreparedStatement e la connessione
-	 * con il database.
-	 * @throws SQLException
-	 */
-	public static void closeConnection() throws SQLException {
-		if(result != null)
-			result.close();
-		statement.close();
-		connection.close();
-	}
-	
+
 	
 	
 	/**
@@ -81,15 +69,15 @@ public class DBMS {
 	public static void registraUtente(String nome, String cognome, String email, String password, String cellulare) throws SQLException{
 		String query1 = "INSERT INTO Utente (Nome, Cognome, Email, Password, Cellulare) " + 
 					    "VALUES (?, ?, ?, MD5(?), ?)";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setString(1, nome);
-		statement.setString(2, cognome);
-		statement.setString(3, email);
-		statement.setString(4, password);
-		statement.setString(5, cellulare);
-		statement.executeUpdate();
-		closeConnection(); 
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
+
+			statement.setString(1, nome);
+			statement.setString(2, cognome);
+			statement.setString(3, email);
+			statement.setString(4, password);
+			statement.setString(5, cellulare);
+			statement.executeUpdate();
+		}
 			
 	}
 	
@@ -100,16 +88,15 @@ public class DBMS {
 	public static int getIDUtente(String email) throws SQLException{
 		String query1 = "SELECT IDUtente FROM Utente WHERE Email=?";
 		int id=-1;
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setString(1, email);
-		result = statement.executeQuery();
-		if(result.next()) {
-			id=result.getInt("IDUtente");
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
+			statement.setString(1, email);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				id = result.getInt("IDUtente");
+			}
+			result.close();
+			return id;
 		}
-		closeConnection(); 
-		return id;
-		
 	}
 	
 	/**
@@ -118,34 +105,40 @@ public class DBMS {
 	 * @param password
 	 */
 	public static Account login(String email, String password) throws SQLException{
-		Account account=null;
-		Utente utente=null;
+		Account account;
+		Utente utente;
 		Map<String, Integer> ruoli=new LinkedHashMap<String, Integer>(); 
 		String query1 = "SELECT IDUtente, Nome, Cognome, Email, Cellulare FROM Utente WHERE Email=? AND Password=MD5(?)";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setString(1, email);
-		statement.setString(2, password);
-		result = statement.executeQuery();
-		if(result.next()) {
-			utente=new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
-		}else {
-			closeConnection();
-			return null;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
+
+			statement.setString(1, email);
+			statement.setString(2, password);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				utente = new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+			} else {
+
+				return null;
+			}
+			result.close();
+			ruoli.put("Cliente", utente.getIdUtente());
+
+
+			String query2 = "SELECT IDAccountAziendale, Ruolo FROM AccountAziendale WHERE Utente_IDUtente=? ORDER BY Ruolo ASC";
+			try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+
+				statement2.setInt(1, utente.getIdUtente());
+				ResultSet result2 = statement2.executeQuery();
+
+				//ciclo per creare la mappa dei ruoli
+				while (result2.next()) {
+					ruoli.put(result2.getString("Ruolo"), result2.getInt("IDAccountAziendale"));
+				}
+				account = new Account(utente, ruoli);
+				result2.close();
+				return account;
+			}
 		}
-		ruoli.put("Cliente", utente.getIdUtente());
-		String query2="SELECT IDAccountAziendale, Ruolo FROM AccountAziendale WHERE Utente_IDUtente=? ORDER BY Ruolo ASC";
-		statement = connection.prepareStatement(query2);
-		statement.setInt(1, utente.getIdUtente());
-		result = statement.executeQuery();
-		
-		//ciclo per creare la mappa dei ruoli
-		while(result.next()) {
-			ruoli.put(result.getString("Ruolo"), result.getInt("IDAccountAziendale"));
-		}
-		account=new Account(utente, ruoli);
-		closeConnection(); 
-		return account;
 		
 	}
 	
@@ -157,12 +150,12 @@ public class DBMS {
 	 */
 	public static void aggiornaNome(int IDUtente, String nome) throws SQLException{
 		String query = "UPDATE Utente SET Nome=? WHERE IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, nome);
-		statement.setInt(2, IDUtente);
-		statement.executeUpdate();
-		closeConnection(); 
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, nome);
+			statement.setInt(2, IDUtente);
+			statement.executeUpdate();
+		}
 			
 	}
 	
@@ -173,12 +166,12 @@ public class DBMS {
 	 */
 	public static void aggiornaCognome(int IDUtente, String cognome) throws SQLException{
 		String query = "UPDATE Utente SET Cognome=? WHERE IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, cognome);
-		statement.setInt(2, IDUtente);
-		statement.executeUpdate();
-		closeConnection(); 
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, cognome);
+			statement.setInt(2, IDUtente);
+			statement.executeUpdate();
+		}
 			
 	}
 
@@ -189,12 +182,12 @@ public class DBMS {
 	 */
 	public static void aggiornaEmail(int IDUtente, String email) throws SQLException{
 		String query = "UPDATE Utente SET Email=? WHERE IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, email);
-		statement.setInt(2, IDUtente);
-		statement.executeUpdate();
-		closeConnection(); 
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, email);
+			statement.setInt(2, IDUtente);
+			statement.executeUpdate();
+		}
 			
 	}
 	
@@ -205,12 +198,12 @@ public class DBMS {
 	 */
 	public static void aggiornaCellulare(int IDUtente, String cellulare) throws SQLException{
 		String query = "UPDATE Utente SET Cellulare=? WHERE IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, cellulare);
-		statement.setInt(2, IDUtente);
-		statement.executeUpdate();
-		closeConnection(); 
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, cellulare);
+			statement.setInt(2, IDUtente);
+			statement.executeUpdate();
+		}
 			
 	}
 	
@@ -221,15 +214,16 @@ public class DBMS {
 	public static Utente getUtente(int IDUtente) throws SQLException{
 		Utente utente=null;
 		String query = "SELECT IDUtente, Nome, Cognome, Email, Cellulare FROM Utente WHERE IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDUtente);
-		result = statement.executeQuery();
-		if(result.next()) {
-			utente=new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDUtente);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				utente = new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+			}
+			result.close();
+			return utente;
 		}
-		closeConnection(); 
-		return utente;
 			
 	}
 	
@@ -240,15 +234,16 @@ public class DBMS {
 	public static Utente getUtenteFromConto(int IDConto) throws SQLException{
 		Utente utente=null;
 		String query = "SELECT IDUtente, Nome, Cognome, Email, Cellulare FROM Utente JOIN Conto ON Conto.Ref_IDUtente=Utente.IDUtente WHERE IDConto=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDConto);
-		result = statement.executeQuery();
-		if(result.next()) {
-			utente=new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDConto);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				utente = new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+			}
+			result.close();
+			return utente;
 		}
-		closeConnection(); 
-		return utente;
 			
 	}
 	
@@ -259,15 +254,16 @@ public class DBMS {
 	public static Utente getUtente(String email) throws SQLException{
 		Utente utente=null;
 		String query = "SELECT IDUtente, Nome, Cognome, Email, Cellulare FROM Utente WHERE Email=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, email);
-		result = statement.executeQuery();
-		if(result.next()) {
-			utente=new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, email);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				utente = new Utente(result.getInt("IDUtente"), result.getString("Nome"), result.getString("Cognome"), result.getString("Email"), result.getString("Cellulare"));
+			}
+			result.close();
+			return utente;
 		}
-		closeConnection(); 
-		return utente;
 			
 	}
 	
@@ -279,15 +275,16 @@ public class DBMS {
 	public static String getEmail(int IDUtente) throws SQLException{
 		String email=null;
 		String query = "SELECT Email FROM Utente WHERE IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDUtente);
-		result = statement.executeQuery();
-		if(result.next()) {
-			email=result.getString("Email");
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDUtente);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				email = result.getString("Email");
+			}
+			result.close();
+			return email;
 		}
-		closeConnection(); 
-		return email;
 			
 	}
 	
@@ -299,15 +296,14 @@ public class DBMS {
 	 */
 	public static int aggiornaPassword(int IDUtente, String password, String password_attuale) throws SQLException{
 		String query = "UPDATE Utente SET Password=MD5(?) WHERE IDUtente=? AND Password=MD5(?)";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, password);
-		statement.setInt(2, IDUtente);
-		statement.setString(3, password_attuale);
-		int result=statement.executeUpdate();
-		closeConnection(); 
-		
-		return result;	
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, password);
+			statement.setInt(2, IDUtente);
+			statement.setString(3, password_attuale);
+			int result = statement.executeUpdate();
+			return result;
+		}
 	}
 	
 
@@ -318,12 +314,11 @@ public class DBMS {
 	 */
 	public static void setToken(int idCliente, int token) throws SQLException{
 		String query = "UPDATE Utente SET TokenResetPassword = ? WHERE IDUtente = ?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, token);
-		statement.setInt(2, idCliente);
-		statement.executeUpdate();
-		closeConnection();
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setInt(1, token);
+			statement.setInt(2, idCliente);
+			statement.executeUpdate();
+		}
 		
 	}
 	
@@ -338,15 +333,16 @@ public class DBMS {
 		boolean flag = false;
 		String query = "SELECT TokenResetPassword FROM Utente WHERE IDUtente = ? ";
 
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, idCliente);
-		result = statement.executeQuery();
-		if(result.next()) {
-			flag = result.getInt("TokenResetPassword")==token;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, idCliente);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				flag = result.getInt("TokenResetPassword") == token;
+			}
+			result.close();
+			return flag;
 		}
-		closeConnection();
-		return flag;
 	}
 
 	/**
@@ -358,21 +354,21 @@ public class DBMS {
 	 */
 	public static int reimpostaPassword(int IDUtente, String password, int tokenResetPassword) throws SQLException{
 		String query1 = "UPDATE Utente SET Password=MD5(?) WHERE IDUtente=? AND TokenResetPassword=?";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setString(1, password);
-		statement.setInt(2, IDUtente);
-		statement.setInt(3, tokenResetPassword);
-		int result=statement.executeUpdate();
-		if(result!=0) {
-			String query2 = "UPDATE Utente SET TokenResetPassword=0 WHERE IDUtente=? " ;
-			statement = connection.prepareStatement(query2);
-			statement.setInt(1, IDUtente);
-			statement.executeUpdate();
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
+
+			statement.setString(1, password);
+			statement.setInt(2, IDUtente);
+			statement.setInt(3, tokenResetPassword);
+			int result = statement.executeUpdate();
+			if (result != 0) {
+				String query2 = "UPDATE Utente SET TokenResetPassword=0 WHERE IDUtente=? ";
+				try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+					statement2.setInt(1, IDUtente);
+					statement2.executeUpdate();
+				}
+			}
+			return result;
 		}
-		closeConnection(); 
-		
-		return result;	
 	}
 
 	/**
@@ -380,15 +376,15 @@ public class DBMS {
 	 * @return categorie
 	 */
 	public static JSONArray getCategorie() throws SQLException{
-		JSONArray categorie=null;
+		JSONArray categorie;
 		String query = "SELECT DISTINCT Categoria FROM Prodotto WHERE Disponibile=true";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		categorie = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return categorie;
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			ResultSet result = statement.executeQuery();
+			categorie = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return categorie;
+		}
 	}
 
 
@@ -397,15 +393,15 @@ public class DBMS {
 	 * @return categorie
 	 */
 	public static JSONArray getAllCategorieBar() throws SQLException{
-		JSONArray categorie=null;
+		JSONArray categorie;
 		String query = "SELECT DISTINCT Categoria FROM Prodotto WHERE Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		categorie = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return categorie;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
+			ResultSet result = statement.executeQuery();
+			categorie = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return categorie;
+		}
 	}
 
 	/**
@@ -413,15 +409,15 @@ public class DBMS {
 	 * @return categorie
 	 */
 	public static JSONArray getAllCategorieCucina() throws SQLException{
-		JSONArray categorie=null;
+		JSONArray categorie;
 		String query = "SELECT DISTINCT Categoria FROM Prodotto WHERE Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		categorie = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return categorie;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
+			ResultSet result = statement.executeQuery();
+			categorie = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return categorie;
+		}
 	}
 	
 	/**
@@ -430,16 +426,16 @@ public class DBMS {
 	 * @return prodotti
 	 */
 	public static JSONArray getProdotti(String categoria) throws SQLException{
-		JSONArray prodotti=null;
+		JSONArray prodotti;
 		String query = "SELECT * FROM Prodotto WHERE Categoria=? AND Disponibile=true";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, categoria);
-		result = statement.executeQuery();
-		prodotti = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return prodotti;
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, categoria);
+			ResultSet result = statement.executeQuery();
+			prodotti = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prodotti;
+		}
 	}
 
 	/**
@@ -447,15 +443,15 @@ public class DBMS {
 	 * @return prodotti
 	 */
 	public static JSONArray getProdotti() throws SQLException{
-		JSONArray prodotti=null;
+		JSONArray prodotti;
 		String query = "SELECT * FROM Prodotto WHERE Disponibile=true";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		prodotti = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return prodotti;
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			ResultSet result = statement.executeQuery();
+			prodotti = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prodotti;
+		}
 	}
 	
 	/**
@@ -463,15 +459,15 @@ public class DBMS {
 	 * @return prodotti
 	 */
 	public static JSONArray getAllProdottiBar() throws SQLException{
-		JSONArray prodotti=null;
+		JSONArray prodotti;
 		String query = "SELECT * FROM Prodotto WHERE Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		prodotti = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return prodotti;
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			ResultSet result = statement.executeQuery();
+			prodotti = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prodotti;
+		}
 	}
 
 	/**
@@ -479,15 +475,15 @@ public class DBMS {
 	 * @return prodotti
 	 */
 	public static JSONArray getAllProdottiCucina() throws SQLException{
-		JSONArray prodotti=null;
+		JSONArray prodotti;
 		String query = "SELECT * FROM Prodotto WHERE Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta')";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		prodotti = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return prodotti;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
+			ResultSet result = statement.executeQuery();
+			prodotti = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prodotti;
+		}
 	}
 	
 	/**
@@ -498,16 +494,16 @@ public class DBMS {
 	public static Prodotto getProdotto(int IDProdotto) throws SQLException{
 		Prodotto prodotto=null;
 		String query = "SELECT * FROM Prodotto WHERE Disponibile=true AND IDProdotto=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDProdotto);
-		result = statement.executeQuery();
-		if(result.next()) {
-			prodotto=new Prodotto(result.getInt("IDProdotto"), result.getString("Nome"), result.getString("Categoria"),result.getString("Ingredienti"),result.getDouble("Prezzo"),result.getBoolean("Disponibile"));
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDProdotto);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				prodotto = new Prodotto(result.getInt("IDProdotto"), result.getString("Nome"), result.getString("Categoria"), result.getString("Ingredienti"), result.getDouble("Prezzo"), result.getBoolean("Disponibile"));
+			}
+			result.close();
+			return prodotto;
 		}
-		closeConnection(); 
-		return prodotto;
-			
 	}
 	
 	/**
@@ -520,41 +516,45 @@ public class DBMS {
 		Date data=Date.valueOf(LocalDate.now().toString());
 		int IDConto=0;
 		String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, data);
-		statement.setInt(2, IDUtente);
-		result = statement.executeQuery();
-		if(result.next()) {
-			IDConto=result.getInt("IDConto");
-		}else {
-			String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
-			statement = connection.prepareStatement(query2);
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
 			statement.setDate(1, data);
 			statement.setInt(2, IDUtente);
-			statement.executeUpdate();
-			
-			statement = connection.prepareStatement(query1);
-			statement.setDate(1, data);
-			statement.setInt(2, IDUtente);
-			result = statement.executeQuery();
-			if(result.next()) {
-				IDConto=result.getInt("IDConto");
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				IDConto = result.getInt("IDConto");
+			} else {
+				String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
+				try(PreparedStatement statement2 = connection.prepareStatement(query2)) {
+					statement2.setDate(1, data);
+					statement2.setInt(2, IDUtente);
+					statement2.executeUpdate();
+				}
+				try(PreparedStatement statement3 = connection.prepareStatement(query1)) {
+					statement3.setDate(1, data);
+					statement3.setInt(2, IDUtente);
+					ResultSet result2 = statement3.executeQuery();
+					if (result2.next()) {
+						IDConto = result2.getInt("IDConto");
+					}
+					result2.close();
+				}
 			}
+			result.close();
+
+			for (Map.Entry<Prodotto, Ordinazione> entry : carrello.getProdotti().entrySet()) {
+				String query3 = "INSERT INTO Ordinazione (Quantita, Consegnata, Ref_IDConto, Tavolo, Prodotto_IDProdotto, Note)" +
+						"VALUES (?, false, ?, ?, ?, ?)";
+				try(PreparedStatement statement3 = connection.prepareStatement(query3)) {
+					statement3.setInt(1, entry.getValue().getQuantita());
+					statement3.setInt(2, IDConto);
+					statement3.setInt(3, tavolo);
+					statement3.setInt(4, entry.getKey().getIdProdotto());
+					statement3.setString(5, entry.getValue().getNote());
+					statement3.executeUpdate();
+				}
+			}
+
 		}
-		for (Map.Entry<Prodotto, Ordinazione> entry : carrello.getProdotti().entrySet()) {
-			String query3 = "INSERT INTO Ordinazione (Quantita, Consegnata, Ref_IDConto, Tavolo, Prodotto_IDProdotto, Note)"+
-					"VALUES (?, false, ?, ?, ?, ?)";
-			statement = connection.prepareStatement(query3);
-			statement.setInt(1, entry.getValue().getQuantita());
-			statement.setInt(2, IDConto);
-			statement.setInt(3, tavolo);
-			statement.setInt(4, entry.getKey().getIdProdotto());
-			statement.setString(5, entry.getValue().getNote());
-			statement.executeUpdate();
-		}
-		
-		closeConnection();
 	}
 	
 	/**
@@ -565,48 +565,48 @@ public class DBMS {
 	 */
 	public static JSONArray getPagamenti(int IDUtente, boolean pagato) throws SQLException{
 		JSONArray pagamenti=new JSONArray();
-		JSONArray ordinazioni=null;
-		JSONArray prenotazioni=null;
+		JSONArray ordinazioni;
+		JSONArray prenotazioni;
 		List <Date> conti=new ArrayList<>();
 		String query, query1, query2;
 
 		query = "SELECT DISTINCT Data FROM Conto WHERE Pagato=? AND Ref_IDUtente=? ORDER BY Data DESC";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setBoolean(1, pagato);
-		statement.setInt(2, IDUtente);
-		result = statement.executeQuery();
-		while(result.next()) {
-			conti.add(result.getDate("Data"));
-		}
-		result.close(); 
-		
-		
-		for(Date data : conti) {
-			query1 = "SELECT IDOrdinazione, Quantita, IDConto, Data, Totale, Nome, Prezzo, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto WHERE Data=? AND Pagato=? AND Ref_IDUtente=?";
-			statement = connection.prepareStatement(query1);
-			statement.setDate(1, data);
-			statement.setBoolean(2, pagato);
-			statement.setInt(3, IDUtente);
-			result = statement.executeQuery();
-			ordinazioni = JSONConverter.convertToJSONArray(result);
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setBoolean(1, pagato);
+			statement.setInt(2, IDUtente);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				conti.add(result.getDate("Data"));
+			}
 			result.close();
-			
-			
-			query2 = "SELECT IDPrenotazione, Conto.Data AS Data, IDConto, Sdraio, Prezzo, Postazione_Numero, Totale FROM Prenotazione INNER JOIN Conto ON Conto.IDConto=Prenotazione.Conto_IDConto WHERE Prenotazione.Data=? AND Pagato=? AND Utente_IDUtente=?";
-			statement = connection.prepareStatement(query2);
-			statement.setDate(1, data);
-			statement.setBoolean(2, pagato);
-			statement.setInt(3, IDUtente);
-			result = statement.executeQuery();
-			prenotazioni = JSONConverter.convertToJSONArray(result);
-			result.close();
-			pagamenti.put(JSONConverter.contoToJSONArray(ordinazioni,prenotazioni));
+
+
+			for (Date data : conti) {
+				query1 = "SELECT IDOrdinazione, Quantita, IDConto, Data, Totale, Nome, Prezzo, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto WHERE Data=? AND Pagato=? AND Ref_IDUtente=?";
+				try (PreparedStatement statement1 = connection.prepareStatement(query1)) {
+					statement1.setDate(1, data);
+					statement1.setBoolean(2, pagato);
+					statement1.setInt(3, IDUtente);
+					ResultSet result1 = statement1.executeQuery();
+					ordinazioni = JSONConverter.convertToJSONArray(result1);
+					result1.close();
+				}
+
+				query2 = "SELECT IDPrenotazione, Conto.Data AS Data, IDConto, Sdraio, Prezzo, Postazione_Numero, Totale FROM Prenotazione INNER JOIN Conto ON Conto.IDConto=Prenotazione.Conto_IDConto WHERE Prenotazione.Data=? AND Pagato=? AND Utente_IDUtente=?";
+				try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+					statement2.setDate(1, data);
+					statement2.setBoolean(2, pagato);
+					statement2.setInt(3, IDUtente);
+					ResultSet result2 = statement2.executeQuery();
+					prenotazioni = JSONConverter.convertToJSONArray(result2);
+					result2.close();
+					pagamenti.put(JSONConverter.contoToJSONArray(ordinazioni, prenotazioni));
+				}
+			}
+
+			return pagamenti;
 		}
-		
-		closeConnection(); 
-		return pagamenti;
-			
 	}
 	
 	
@@ -615,15 +615,15 @@ public class DBMS {
 	 * @return accounts
 	 */
 	public static JSONArray getAccountAziendali() throws SQLException{
-		JSONArray accounts=null;
+		JSONArray accounts;
 		String query = "SELECT IDAccountAziendale, Ruolo, IDUtente, Nome, Cognome, Email, Cellulare FROM AccountAziendale INNER JOIN Utente ON AccountAziendale.Utente_IDUtente=Utente.IDUtente ORDER BY Cognome, Nome ASC";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		accounts = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return accounts;
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			ResultSet result = statement.executeQuery();
+			accounts = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return accounts;
+		}
 	}
 	
 	
@@ -635,15 +635,14 @@ public class DBMS {
 	 */
 	public static boolean rimuoviRuolo(int IDUtente, String ruolo) throws SQLException{
 		String query = "DELETE FROM AccountAziendale WHERE Utente_IDUtente=? AND Ruolo=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDUtente);
-		statement.setString(2, ruolo);
-		int result=statement.executeUpdate();
-		closeConnection(); 
-		
-		return result>0;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
+			statement.setInt(1, IDUtente);
+			statement.setString(2, ruolo);
+			int result = statement.executeUpdate();
+
+			return result > 0;
+		}
 	}
 	
 	/**
@@ -654,14 +653,13 @@ public class DBMS {
 	 */
 	public static boolean aggiungiRuolo(int IDUtente, String ruolo) throws SQLException{
 		String query = "INSERT INTO AccountAziendale (Utente_IDUtente, Ruolo) VALUES (?, ?)";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDUtente);
-		statement.setString(2, ruolo);
-		int result=statement.executeUpdate();
-		closeConnection(); 
-		
-		return result>0;	
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDUtente);
+			statement.setString(2, ruolo);
+			int result = statement.executeUpdate();
+			return result > 0;
+		}
 	}
 	
 	/**
@@ -672,17 +670,17 @@ public class DBMS {
 	 * @throws SQLException
 	 */
 	public static JSONArray searchAccount(String nome, String cognome) throws SQLException{
-		JSONArray accounts=null;
+		JSONArray accounts;
 		String query = "SELECT IDUtente, Nome, Cognome, Email, Cellulare FROM Utente LEFT JOIN AccountAziendale ON AccountAziendale.Utente_IDUtente=Utente.IDUtente WHERE Nome=? AND Cognome=? AND IDAccountAziendale IS NULL";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, nome);
-		statement.setString(2, cognome);
-		result = statement.executeQuery();
-		accounts = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return accounts;
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, nome);
+			statement.setString(2, cognome);
+			ResultSet result = statement.executeQuery();
+			accounts = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return accounts;
+		}
 	}
 	
 	/**
@@ -693,16 +691,17 @@ public class DBMS {
 	 * @throws SQLException
 	 */
 	public static JSONArray searchClient(String nome, String cognome) throws SQLException{
-		JSONArray accounts=null;
+		JSONArray accounts;
 		String query = "SELECT IDUtente, Nome, Cognome, Email, Cellulare FROM Utente WHERE Nome=? AND Cognome=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setString(1, nome);
-		statement.setString(2, cognome);
-		result = statement.executeQuery();
-		accounts = JSONConverter.convertToJSONArray(result);
-		closeConnection(); 
-		return accounts;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, nome);
+			statement.setString(2, cognome);
+			ResultSet result = statement.executeQuery();
+			accounts = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return accounts;
+		}
 			
 	}
 	
@@ -717,57 +716,56 @@ public class DBMS {
 		String query1, query2, query3;
 
 		query1 = "SELECT DISTINCT Ref_IDUtente, Data FROM Conto WHERE Pagato=? ORDER BY Data DESC";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setBoolean(1, pagato);
-		result = statement.executeQuery();
-		while(result.next()) {
-			int id=result.getInt("Ref_IDUtente");
-			Date d=result.getDate("Data");
-			if(conti.get(id)!=null) {
-				conti.get(id).add(d);
-			}else{
-				List <Date> list=new ArrayList<>();
-				list.add(d);
-				conti.put(id,list);
-			};
-		}
-		result.close(); 
-		
-		for (Integer IDUtente: conti.keySet()) {
-			List <Date> list=conti.get(IDUtente);
-			JSONArray pagamenti=new JSONArray();
-			JSONArray ordinazioni=null;
-			JSONArray prenotazioni=null;
-			JSONObject conto=new JSONObject();
-			for (Date data: list) {
-				query2 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Data, Totale, Prodotto.Nome AS Nome, Prezzo, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Pagato=? AND Ref_IDUtente=?";
-				statement = connection.prepareStatement(query2);
-				statement.setDate(1, data);
-				statement.setBoolean(2, pagato);
-				statement.setInt(3, IDUtente);
-				result = statement.executeQuery();
-				ordinazioni = JSONConverter.convertToJSONArray(result);
-				result.close();
-				
-				
-				query3 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDPrenotazione, Conto.Data, IDConto, Sdraio, Prezzo, Postazione_Numero, Totale FROM Prenotazione INNER JOIN Conto ON Conto.IDConto=Prenotazione.Conto_IDConto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Prenotazione.Data=? AND Pagato=? AND Utente_IDUtente=?";
-				statement = connection.prepareStatement(query3);
-				statement.setDate(1, data);
-				statement.setBoolean(2, pagato);
-				statement.setInt(3, IDUtente);
-				result = statement.executeQuery();
-				prenotazioni = JSONConverter.convertToJSONArray(result);
-				result.close();
-				pagamenti.put(JSONConverter.contoToJSONArray(ordinazioni,prenotazioni));
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
+			statement.setBoolean(1, pagato);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				int id = result.getInt("Ref_IDUtente");
+				Date d = result.getDate("Data");
+				if (conti.get(id) != null) {
+					conti.get(id).add(d);
+				} else {
+					List<Date> list = new ArrayList<>();
+					list.add(d);
+					conti.put(id, list);
+				}
 			}
-			conto.put("conto", pagamenti);
-			JSONconti.put(conto);
+			result.close();
+
+			for (Integer IDUtente : conti.keySet()) {
+				List<Date> list = conti.get(IDUtente);
+				JSONArray pagamenti = new JSONArray();
+				JSONArray ordinazioni ;
+				JSONArray prenotazioni ;
+				JSONObject conto = new JSONObject();
+				for (Date data : list) {
+					query2 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Data, Totale, Prodotto.Nome AS Nome, Prezzo, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Pagato=? AND Ref_IDUtente=?";
+					try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+						statement2.setDate(1, data);
+						statement2.setBoolean(2, pagato);
+						statement2.setInt(3, IDUtente);
+						ResultSet result2 = statement2.executeQuery();
+						ordinazioni = JSONConverter.convertToJSONArray(result2);
+						result2.close();
+					}
+
+					query3 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDPrenotazione, Conto.Data, IDConto, Sdraio, Prezzo, Postazione_Numero, Totale FROM Prenotazione INNER JOIN Conto ON Conto.IDConto=Prenotazione.Conto_IDConto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Prenotazione.Data=? AND Pagato=? AND Utente_IDUtente=?";
+					try (PreparedStatement statement3 = connection.prepareStatement(query3)) {
+						statement3.setDate(1, data);
+						statement3.setBoolean(2, pagato);
+						statement3.setInt(3, IDUtente);
+						ResultSet result3 = statement3.executeQuery();
+						prenotazioni = JSONConverter.convertToJSONArray(result3);
+						result3.close();
+						pagamenti.put(JSONConverter.contoToJSONArray(ordinazioni, prenotazioni));
+					}
+				}
+				conto.put("conto", pagamenti);
+				JSONconti.put(conto);
+			}
+
+			return JSONconti;
 		}
-		
-		closeConnection(); 
-		return JSONconti;
-			
 	}
 	
 	/**
@@ -780,39 +778,39 @@ public class DBMS {
 	public static boolean paga(int IDConto, double sconto, double supplemento, double totale) throws SQLException{
 		String query1 = "SELECT Quantita, Prezzo FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto WHERE IDConto=?";
 		double tot_database=0;
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setInt(1, IDConto);
-		result=statement.executeQuery();
-		while(result.next()) {
-			tot_database+=result.getDouble("Prezzo")*result.getInt("Quantita");
-		}
-		result.close();
-		String query2 = "SELECT Sdraio, Prezzo, Postazione_Numero FROM Prenotazione INNER JOIN Conto ON Conto.IDConto=Prenotazione.Conto_IDConto WHERE IDConto=?";
-		statement = connection.prepareStatement(query2);
-		statement.setInt(1, IDConto);
-		result=statement.executeQuery();
-		while(result.next()) {
-			if(result.getInt("Sdraio")>0) {
-				tot_database+=result.getDouble("Prezzo")*result.getInt("Sdraio");
-			}else if(result.getInt("Postazione_Numero")>0) {
-				tot_database+=result.getDouble("Prezzo");
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query1)) {
+			statement.setInt(1, IDConto);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				tot_database += result.getDouble("Prezzo") * result.getInt("Quantita");
+			}
+			result.close();
+			String query2 = "SELECT Sdraio, Prezzo, Postazione_Numero FROM Prenotazione INNER JOIN Conto ON Conto.IDConto=Prenotazione.Conto_IDConto WHERE IDConto=?";
+			try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+				statement2.setInt(1, IDConto);
+				ResultSet result2 = statement2.executeQuery();
+				while (result2.next()) {
+					if (result2.getInt("Sdraio") > 0) {
+						tot_database += result2.getDouble("Prezzo") * result2.getInt("Sdraio");
+					} else if (result2.getInt("Postazione_Numero") > 0) {
+						tot_database += result2.getDouble("Prezzo");
+					}
+				}
+				result2.close();
+				if (totale != tot_database) {
+					return false;
+				}
+			}
+
+			String query3 = "UPDATE Conto SET Pagato=true, Totale=? WHERE IDConto=?";
+			try (PreparedStatement statement3 = connection.prepareStatement(query3)) {
+
+				statement3.setDouble(1, totale - sconto + supplemento);
+				statement3.setInt(2, IDConto);
+				int risultato = statement3.executeUpdate();
+				return risultato > 0;
 			}
 		}
-		result.close();
-		if(totale!=tot_database) {
-			closeConnection(); 
-			return false;
-		}
-		String query3="UPDATE Conto SET Pagato=true, Totale=? WHERE IDConto=?";
-		statement = connection.prepareStatement(query3);
-		statement.setDouble(1, totale-sconto+supplemento);
-		statement.setInt(2, IDConto);
-		int result=statement.executeUpdate();
-
-		closeConnection(); 
-		
-		return result>0;
 	}
 	
 	
@@ -828,49 +826,48 @@ public class DBMS {
         LocalDate domenica=data.plusDays(7-data.getDayOfWeek().getValue());
 		
         String query="SELECT SUM(Totale) AS Giorno FROM Conto WHERE Data=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setDate(1, Date.valueOf(data.toString()));
-		result = statement.executeQuery();
-		if(result.next()) {
-			storico.put(JSONConverter.convertToJSONObject(result));
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setDate(1, Date.valueOf(data.toString()));
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				storico.put(JSONConverter.convertToJSONObject(result));
+			}
+			result.close();
+
+			String query2 = "SELECT SUM(Totale) AS Settimana FROM Conto WHERE Data BETWEEN ? AND ?";
+			try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+				statement2.setDate(1, Date.valueOf(lunedi.toString()));
+				statement2.setDate(2, Date.valueOf(domenica.toString()));
+				ResultSet result2 = statement2.executeQuery();
+				if (result2.next()) {
+					storico.put(JSONConverter.convertToJSONObject(result));
+				}
+				result2.close();
+			}
+
+			String query3 = "SELECT SUM(Totale) AS Mese FROM Conto WHERE EXTRACT(MONTH FROM Data)=EXTRACT(MONTH FROM ?)";
+			try (PreparedStatement statement3 = connection.prepareStatement(query3)) {
+				statement3.setDate(1, Date.valueOf(data.toString()));
+				ResultSet result3 = statement3.executeQuery();
+				if (result3.next()) {
+					storico.put(JSONConverter.convertToJSONObject(result3));
+				}
+				result3.close();
+			}
+
+			String query4 = "SELECT SUM(Totale) AS Anno FROM Conto WHERE EXTRACT(YEAR FROM Data)=EXTRACT(YEAR FROM ?)";
+			try (PreparedStatement statement4 = connection.prepareStatement(query4)) {
+				statement4.setDate(1, Date.valueOf(data.toString()));
+				ResultSet result4 = statement4.executeQuery();
+				if (result4.next()) {
+					storico.put(JSONConverter.convertToJSONObject(result));
+				}
+				result4.close();
+
+				return storico;
+			}
 		}
-		result.close();
-		
-		String query2="SELECT SUM(Totale) AS Settimana FROM Conto WHERE Data BETWEEN ? AND ?";
-		statement = connection.prepareStatement(query2);
-		statement.setDate(1, Date.valueOf(lunedi.toString()));
-		statement.setDate(2, Date.valueOf(domenica.toString()));
-		result = statement.executeQuery();
-		if(result.next()) {
-			storico.put(JSONConverter.convertToJSONObject(result));
-		}
-		result.close();
-		
-		
-		String query3="SELECT SUM(Totale) AS Mese FROM Conto WHERE EXTRACT(MONTH FROM Data)=EXTRACT(MONTH FROM ?)";
-		statement = connection.prepareStatement(query3);
-		statement.setDate(1, Date.valueOf(data.toString()));
-		result = statement.executeQuery();
-		if(result.next()) {
-			storico.put(JSONConverter.convertToJSONObject(result));
-		}
-		result.close();
-		
-		
-		String query4="SELECT SUM(Totale) AS Anno FROM Conto WHERE EXTRACT(YEAR FROM Data)=EXTRACT(YEAR FROM ?)";
-		startConnection();
-		statement = connection.prepareStatement(query4);
-		statement.setDate(1, Date.valueOf(data.toString()));
-		result = statement.executeQuery();
-		if(result.next()) {
-			storico.put(JSONConverter.convertToJSONObject(result));
-		}
-		result.close();
-		
-		closeConnection(); 
-		return storico;
-			
 	}
 	
 	/**
@@ -880,12 +877,12 @@ public class DBMS {
 	 */
 	public static boolean liberaPostazione(int IDPrenotazione) throws SQLException{
 		String query = "UPDATE Prenotazione SET Liberata=true WHERE IDPrenotazione=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDPrenotazione);
-		int result=statement.executeUpdate();
-		closeConnection(); 
-		return result>0;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDPrenotazione);
+			int result = statement.executeUpdate();
+			return result > 0;
+		}
 	}
 	
 	/**
@@ -894,22 +891,19 @@ public class DBMS {
 	 * @throws SQLException
 	 */
 	public static JSONArray getPostazioniDaLiberare() throws SQLException{
-		JSONArray postazioni=null;
+		JSONArray postazioni;
 		
 		Date oggi=Date.valueOf(LocalDate.now().toString());
-		String query1 = "SELECT IDPrenotazione, IDUtente, Nome, Cognome, Postazione_Numero FROM Utente JOIN Prenotazione ON Prenotazione.Utente_IDUtente=Utente.IDUtente WHERE Postazione_Numero IS NOT NULL AND Postazione_Numero>0 AND Liberata=false AND Data=? ORDER BY Cognome, Nome ASC";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, oggi);
-		result = statement.executeQuery();
+		String query = "SELECT IDPrenotazione, IDUtente, Nome, Cognome, Postazione_Numero FROM Utente JOIN Prenotazione ON Prenotazione.Utente_IDUtente=Utente.IDUtente WHERE Postazione_Numero IS NOT NULL AND Postazione_Numero>0 AND Liberata=false AND Data=? ORDER BY Cognome, Nome ASC";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setDate(1, oggi);
+			ResultSet result = statement.executeQuery();
 
-		postazioni = JSONConverter.convertToJSONArray(result);
-		
-		result.close();
-		
-		closeConnection(); 
-		return postazioni;
+			postazioni = JSONConverter.convertToJSONArray(result);
 
+			result.close();
+			return postazioni;
+		}
 	}
 	
 	/**
@@ -917,19 +911,17 @@ public class DBMS {
 	 * @return ordini
 	 */
 	public static JSONArray getOrdiniCameriere() throws SQLException{
-		JSONArray ordini=null;
+		JSONArray ordini;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
-		String query1;
-		startConnection();
-		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false ORDER BY IDOrdinazione ASC";
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, oggi);
-		result = statement.executeQuery();
-		ordini = JSONConverter.convertToJSONArray(result);
-		
-		closeConnection(); 
-		return ordini;
-			
+		String query = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false ORDER BY IDOrdinazione ASC";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setDate(1, oggi);
+			ResultSet result = statement.executeQuery();
+			ordini = JSONConverter.convertToJSONArray(result);
+
+			result.close();
+			return ordini;
+		}
 	}
 
 	/**
@@ -937,19 +929,17 @@ public class DBMS {
 	 * @return ordini
 	 */
 	public static JSONArray getOrdiniCucina() throws SQLException{
-		JSONArray ordini=null;
+		JSONArray ordini;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
-		String query1;
-		startConnection();
-		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, oggi);
-		result = statement.executeQuery();
-		ordini = JSONConverter.convertToJSONArray(result);
+		String query = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setDate(1, oggi);
+			ResultSet result = statement.executeQuery();
+			ordini = JSONConverter.convertToJSONArray(result);
 
-		closeConnection();
-		return ordini;
-
+			result.close();
+			return ordini;
+		}
 	}
 
 	/**
@@ -957,19 +947,17 @@ public class DBMS {
 	 * @return ordini
 	 */
 	public static JSONArray getOrdiniBar() throws SQLException{
-		JSONArray ordini=null;
+		JSONArray ordini;
 		Date oggi=Date.valueOf(LocalDate.now().toString());
-		String query1;
-		startConnection();
-		query1 = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, oggi);
-		result = statement.executeQuery();
-		ordini = JSONConverter.convertToJSONArray(result);
+		String query = "SELECT Utente.Nome AS Utente_Nome, Cognome, IDUtente, IDOrdinazione, Quantita, IDConto, Tavolo, Note, Prodotto.Nome AS Nome, Ingredienti, Categoria FROM Ordinazione INNER JOIN Conto ON Conto.IDConto=Ordinazione.Ref_IDConto INNER JOIN Prodotto ON Ordinazione.Prodotto_IDProdotto=Prodotto.IDProdotto INNER JOIN Utente ON Utente.IDUtente=Conto.Ref_IDUtente WHERE Data=? AND Consegnata=false AND Categoria NOT IN ('Antipasti', 'Panini', 'Piadine', 'Toast', 'Insalate', 'Pasta') ORDER BY IDOrdinazione ASC";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setDate(1, oggi);
+			ResultSet result = statement.executeQuery();
+			ordini = JSONConverter.convertToJSONArray(result);
 
-		closeConnection();
-		return ordini;
-
+			result.close();
+			return ordini;
+		}
 	}
 	
 	/**
@@ -978,12 +966,12 @@ public class DBMS {
 	 */
 	public static boolean setConsegnata(int IDOrdinazione) throws SQLException{
 		String query = "UPDATE Ordinazione SET Consegnata=true WHERE IDOrdinazione=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDOrdinazione);
-		int result=statement.executeUpdate();
-		closeConnection(); 
-		return result>0;	
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setInt(1, IDOrdinazione);
+			int result = statement.executeUpdate();
+			return result > 0;
+		}
 	}
 
 
@@ -995,13 +983,13 @@ public class DBMS {
 	 */
 	public static void setDisponibile(int IDProdotto, boolean flag) throws SQLException{
 		String query = "UPDATE Prodotto SET Disponibile=? WHERE IDProdotto=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setBoolean(1, flag);
-		statement.setInt(2, IDProdotto);
-		statement.executeUpdate();
-		closeConnection(); 
-			
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setBoolean(1, flag);
+			statement.setInt(2, IDProdotto);
+			statement.executeUpdate();
+
+		}
 	}
 
 	/**
@@ -1009,15 +997,15 @@ public class DBMS {
 	 * @return postazioni
 	 */
 	public static JSONArray getPostazioni() throws Exception{
-		JSONArray postazioni=null;
-		String query;
-		startConnection();
-		query = "SELECT * FROM Postazione";
-		statement = connection.prepareStatement(query);
-		result = statement.executeQuery();
-		postazioni = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return postazioni;
+		JSONArray postazioni;
+		String query = "SELECT * FROM Postazione";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			ResultSet result = statement.executeQuery();
+			postazioni = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return postazioni;
+		}
 	}
 
 	/**
@@ -1025,19 +1013,18 @@ public class DBMS {
 	 * @return ordini
 	 */
 	public static JSONArray getPrenotazioni(LocalDate data) throws SQLException{
-		JSONArray prenotazioni=null;
+		JSONArray prenotazioni;
+		String query= "SELECT IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione WHERE Data=? AND Liberata=false ORDER BY Numero";
 		if(LocalDate.now().isAfter(data)){
 			return new JSONArray();
 		}
-		String query;
-		startConnection();
-		query = "SELECT IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione WHERE Data=? AND Liberata=false";
-		statement = connection.prepareStatement(query);
-		statement.setDate(1, Date.valueOf(data.toString()));
-		result = statement.executeQuery();
-		prenotazioni = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return prenotazioni;
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setDate(1, Date.valueOf(data.toString()));
+			ResultSet result = statement.executeQuery();
+			prenotazioni = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prenotazioni;
+		}
 
 	}
 
@@ -1046,20 +1033,19 @@ public class DBMS {
 	 * @return ordini
 	 */
 	public static JSONArray getPrenotazioniBagnino(LocalDate data) throws SQLException{
-		JSONArray prenotazioni=null;
+		JSONArray prenotazioni;
 		if(LocalDate.now().isAfter(data)){
 			return new JSONArray();
 		}
-		String query;
-		startConnection();
-		query = "SELECT Nome, Cognome, Cellulare, IDUtente, IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione JOIN Utente ON Prenotazione.Utente_IDUtente = Utente.IDUtente WHERE Data=? AND Liberata=false";
-		statement = connection.prepareStatement(query);
-		statement.setDate(1, Date.valueOf(data.toString()));
-		result = statement.executeQuery();
-		prenotazioni = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return prenotazioni;
+		String query = "SELECT Nome, Cognome, Email, Cellulare, IDUtente, IDPrenotazione, Sdraio, Postazione_Numero AS Numero, Occupata FROM Prenotazione JOIN Utente ON Prenotazione.Utente_IDUtente = Utente.IDUtente WHERE Data=? AND Liberata=false ORDER BY Numero";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
+			statement.setDate(1, Date.valueOf(data.toString()));
+			ResultSet result = statement.executeQuery();
+			prenotazioni = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prenotazioni;
+		}
 	}
 
 	/**
@@ -1075,51 +1061,58 @@ public class DBMS {
 
 		//Verifica che ci siano ancora sdraio disponibili per la data selezionata
 		String query = "SELECT SUM(Sdraio) AS sdraioOccupate FROM Prenotazione WHERE Data=? AND Liberata=false";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setDate(1, data);
-		result = statement.executeQuery();
-		if(result.next()) {
-			if(result.getInt("sdraioOccupate")+sdraio>Prenotazione.getSdraioMax()) return false;
-		}
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
-		//Verifica che esista già un conto non ancora pagato per la data selezionata associato all'utente
-
-		String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, data);
-		statement.setInt(2, IDUtente);
-		result = statement.executeQuery();
-		if(result.next()) {
-			IDConto=result.getInt("IDConto");
-		}else {
-			String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
-			statement = connection.prepareStatement(query2);
 			statement.setDate(1, data);
-			statement.setInt(2, IDUtente);
-			statement.executeUpdate();
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				if (result.getInt("sdraioOccupate") + sdraio > Prenotazione.getSdraioMax()) return false;
+			}
+			result.close();
+			//Verifica che esista già un conto non ancora pagato per la data selezionata associato all'utente
 
-			statement = connection.prepareStatement(query1);
-			statement.setDate(1, data);
-			statement.setInt(2, IDUtente);
-			result = statement.executeQuery();
-			if(result.next()) {
-				IDConto=result.getInt("IDConto");
+			String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
+			try(PreparedStatement statement1 = connection.prepareStatement(query1)) {
+				statement1.setDate(1, data);
+				statement1.setInt(2, IDUtente);
+				ResultSet result1 = statement1.executeQuery();
+				if (result1.next()) {
+					IDConto = result1.getInt("IDConto");
+				} else {
+					String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
+					try(PreparedStatement statement2 = connection.prepareStatement(query2)) {
+						statement2.setDate(1, data);
+						statement2.setInt(2, IDUtente);
+						statement2.executeUpdate();
+					}
+
+					try(PreparedStatement statement3 = connection.prepareStatement(query1)) {
+						statement3.setDate(1, data);
+						statement3.setInt(2, IDUtente);
+						ResultSet result3 = statement3.executeQuery();
+						if (result3.next()) {
+							IDConto = result3.getInt("IDConto");
+						}
+						result3.close();
+					}
+				}
+				result1.close();
+
+				String query4 = "INSERT INTO Prenotazione (Data, Utente_IDUtente, Conto_IDConto, Sdraio, Prezzo, Postazione_Numero) " +
+						"VALUES (?, ?, ?, ?, ?, NULL)";
+
+				try(PreparedStatement statement4 = connection.prepareStatement(query4)) {
+					statement4.setDate(1, data);
+					statement4.setInt(2, IDUtente);
+					statement4.setInt(3, IDConto);
+					statement4.setInt(4, sdraio);
+					statement4.setDouble(5, prezzo);
+					statement4.executeUpdate();
+
+				}
+				return true;
 			}
 		}
-		String query3 = "INSERT INTO Prenotazione (Data, Utente_IDUtente, Conto_IDConto, Sdraio, Prezzo, Postazione_Numero) "+
-				"VALUES (?, ?, ?, ?, ?, NULL)";
-		statement = connection.prepareStatement(query3);
-		statement.setDate(1, data);
-		statement.setInt(2, IDUtente);
-		statement.setInt(3, IDConto);
-		statement.setInt(4, sdraio);
-		statement.setDouble(5, prezzo);
-		statement.executeUpdate();
-		closeConnection();
-
-		return true;
 	}
 
 	/**
@@ -1136,52 +1129,60 @@ public class DBMS {
 
 		//Verifica che la postazione sia veramente disponibile per la data selezionata
 		String query = "SELECT IDPrenotazione FROM Prenotazione WHERE Data=? AND Liberata=false AND Postazione_Numero=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setDate(1, data);
-		statement.setInt(2, numero);
-		result = statement.executeQuery();
-		if(result.next()) {
-			if(result.getInt("IDPrenotazione")!=0) return false;
-		}
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
-		//Verifica che esista già un conto non ancora pagato per la data selezionata associato all'utente
-		String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
-		startConnection();
-		statement = connection.prepareStatement(query1);
-		statement.setDate(1, data);
-		statement.setInt(2, IDUtente);
-		result = statement.executeQuery();
-		if(result.next()) {
-			IDConto=result.getInt("IDConto");
-		}else {
-			String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
-			statement = connection.prepareStatement(query2);
 			statement.setDate(1, data);
-			statement.setInt(2, IDUtente);
-			statement.executeUpdate();
+			statement.setInt(2, numero);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				if (result.getInt("IDPrenotazione") != 0) return false;
+			}
+			result.close();
 
-			statement = connection.prepareStatement(query1);
-			statement.setDate(1, data);
-			statement.setInt(2, IDUtente);
-			result = statement.executeQuery();
-			if(result.next()) {
-				IDConto=result.getInt("IDConto");
+			//Verifica che esista già un conto non ancora pagato per la data selezionata associato all'utente
+			String query1 = "SELECT IDConto FROM Conto WHERE Data=? AND Pagato=false AND Ref_IDUtente=?";
+			try (PreparedStatement statement1 = connection.prepareStatement(query1)) {
+				statement1.setDate(1, data);
+				statement1.setInt(2, IDUtente);
+				ResultSet result1 = statement1.executeQuery();
+				if (result1.next()) {
+					IDConto = result1.getInt("IDConto");
+				} else {
+					String query2 = "INSERT INTO Conto (Data, Pagato, Ref_IDUtente) VALUES (?, false, ?)";
+					try (PreparedStatement statement2 = connection.prepareStatement(query2)) {
+						statement2.setDate(1, data);
+						statement2.setInt(2, IDUtente);
+						statement2.executeUpdate();
+					}
+
+
+					try (PreparedStatement statement3 = connection.prepareStatement(query1)) {
+						statement3.setDate(1, data);
+						statement3.setInt(2, IDUtente);
+						ResultSet result3 = statement3.executeQuery();
+						if (result3.next()) {
+							IDConto = result3.getInt("IDConto");
+						}
+						result3.close();
+					}
+				}
+				result1.close();
+				String query4 = "INSERT INTO Prenotazione (Data, Utente_IDUtente, Conto_IDConto, Sdraio, Prezzo, Postazione_Numero) " +
+						"VALUES (?, ?, ?, ?, ?, ?)";
+
+				try (PreparedStatement statement4 = connection.prepareStatement(query4)) {
+					statement4.setDate(1, data);
+					statement4.setInt(2, IDUtente);
+					statement4.setInt(3, IDConto);
+					statement4.setInt(4, 0);
+					statement4.setDouble(5, prezzo);
+					statement4.setInt(6, numero);
+					statement4.executeUpdate();
+				}
 			}
 		}
-		String query3 = "INSERT INTO Prenotazione (Data, Utente_IDUtente, Conto_IDConto, Sdraio, Prezzo, Postazione_Numero) "+
-				"VALUES (?, ?, ?, ?, ?, ?)";
-		statement = connection.prepareStatement(query3);
-		statement.setDate(1, data);
-		statement.setInt(2, IDUtente);
-		statement.setInt(3, IDConto);
-		statement.setInt(4, 0);
-		statement.setDouble(5, prezzo);
-		statement.setInt(6, numero);
-		statement.executeUpdate();
-		closeConnection();
-
 		return true;
+
 	}
 
 	/**
@@ -1190,19 +1191,18 @@ public class DBMS {
 	 * @throws SQLException
 	 */
 	public static JSONArray getPrenotazioniUtente(int IDUtente) throws SQLException{
-		JSONArray prenotazioni=null;
+		JSONArray prenotazioni;
 		Date data=Date.valueOf(LocalDate.now().toString());
-		String query;
-		startConnection();
-		query = "SELECT IDPrenotazione, Sdraio, Prezzo, Data, Prenotazione.Conto_IDConto AS IDConto, Postazione_Numero AS Numero FROM Prenotazione WHERE Prenotazione.Utente_IDUtente=? AND Data>=? AND Liberata=false AND Occupata=false";
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDUtente);
-		statement.setDate(2, Date.valueOf(data.toString()));
-		result = statement.executeQuery();
-		prenotazioni = JSONConverter.convertToJSONArray(result);
-		closeConnection();
-		return prenotazioni;
+		String query = "SELECT IDPrenotazione, Sdraio, Prezzo, Data, Prenotazione.Conto_IDConto AS IDConto, Postazione_Numero AS Numero FROM Prenotazione WHERE Prenotazione.Utente_IDUtente=? AND Data>=? AND Liberata=false AND Occupata=false";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
+			statement.setInt(1, IDUtente);
+			statement.setDate(2, Date.valueOf(data.toString()));
+			ResultSet result = statement.executeQuery();
+			prenotazioni = JSONConverter.convertToJSONArray(result);
+			result.close();
+			return prenotazioni;
+		}
 	}
 
 	/**
@@ -1213,23 +1213,52 @@ public class DBMS {
 	public static boolean rimuoviPrenotazione(int IDPrenotazione, int IDUtente, int IDConto) throws SQLException{
 		Date data=Date.valueOf(LocalDate.now().toString());
 		String query = "DELETE FROM Prenotazione WHERE IDPrenotazione=? AND Utente_IDUtente=? AND Data>=? AND Liberata=false AND Occupata=false AND Conto_IDConto=?";
-		startConnection();
-		statement = connection.prepareStatement(query);
-		statement.setInt(1, IDPrenotazione);
-		statement.setInt(2, IDUtente);
-		statement.setDate(3, Date.valueOf(data.toString()));
-		statement.setInt(4, IDConto);
-		int result=statement.executeUpdate();
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
-		String query2 = "DELETE FROM Conto WHERE IDConto=? AND (SELECT COUNT(Prenotazione.IDPrenotazione) AS Prenotazioni FROM Prenotazione WHERE Conto_IDConto=?)=0 AND (SELECT COUNT(IDOrdinazione) AS Ordinazioni FROM Ordinazione WHERE Ref_IDConto=?)=0";
-		statement = connection.prepareStatement(query2);
-		statement.setInt(1, IDConto);
-		statement.setInt(2, IDConto);
-		statement.setInt(3, IDConto);
-		statement.executeUpdate();
-		closeConnection();
+			statement.setInt(1, IDPrenotazione);
+			statement.setInt(2, IDUtente);
+			statement.setDate(3, Date.valueOf(data.toString()));
+			statement.setInt(4, IDConto);
+			int result = statement.executeUpdate();
 
-		return result>0;
-
+			String query2 = "DELETE FROM Conto WHERE IDConto=? AND (SELECT COUNT(Prenotazione.IDPrenotazione) AS Prenotazioni FROM Prenotazione WHERE Conto_IDConto=?)=0 AND (SELECT COUNT(IDOrdinazione) AS Ordinazioni FROM Ordinazione WHERE Ref_IDConto=?)=0";
+			try(PreparedStatement statement2 = connection.prepareStatement(query2)) {
+				statement2.setInt(1, IDConto);
+				statement2.setInt(2, IDConto);
+				statement2.setInt(3, IDConto);
+				statement2.executeUpdate();
+			}
+			return result > 0;
+		}
 	}
+
+	/**
+	 * Ritorna un JSONArray contenente i dati delle prenotazioni per la data selezionata con i dati di chi ha prenotato
+	 * @return ordini
+	 */
+	public static JSONArray getPrenotazioniReception(LocalDate data) throws SQLException{
+		return getPrenotazioniBagnino(data);
+	}
+
+	/**
+	 * Imposta il flag occupata della prenotazione specificata tramite ID e ritorna un boolean che indica la corretta esecuzione dell'operazione
+	 * @param IDPrenotazione
+	 * @param occupata
+	 * @param IDUtente
+	 * @throws SQLException
+	 */
+	public static boolean setOccupata(int IDPrenotazione, boolean occupata, int IDUtente) throws SQLException{
+		Date data=Date.valueOf(LocalDate.now().toString());
+		String query = "UPDATE Prenotazione SET Occupata = ? WHERE IDPrenotazione = ? AND Data=? AND Utente_IDUtente=?";
+		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setBoolean(1, occupata);
+			statement.setInt(2, IDPrenotazione);
+			statement.setDate(3, data);
+			statement.setInt(4, IDUtente);
+			int result = statement.executeUpdate();
+			return result > 0;
+		}
+	}
+
 }

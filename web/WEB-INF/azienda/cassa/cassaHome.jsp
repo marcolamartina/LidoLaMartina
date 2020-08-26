@@ -38,7 +38,7 @@ response.setDateHeader ("Expires", 0); %>
        <div>
        		<a href="CassaHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
        		<a href="StoricoIncassi" ><button type="submit" class="btn btn-primary" name="commit">Storico incassi</button></a>
-       		<a href="LiberaPostazione" ><button type="submit" class="btn btn-primary" name="commit">Libera postazione</button></a>
+       		<a href="LiberaPostazioneCassa" ><button type="submit" class="btn btn-primary" name="commit">Libera postazione</button></a>
             <br />
             <br />
 		</div>

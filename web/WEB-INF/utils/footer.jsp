@@ -9,10 +9,11 @@
 <meta charset="UTF-8">
 </head>
 <body>
-	<br />
-	<br />
-	<br />
+
 	<div class="container">
+		<br />
+		<br />
+		<br />
 		<div class="jumbotron small">
 			<footer class="text-center">
 				<!-- Grid row -->

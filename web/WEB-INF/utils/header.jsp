@@ -96,7 +96,7 @@
 						    <a class="nav-link" href="#" data-toggle="dropdown"><i class="fa fa-user"></i> Account</a>
 						   
 						    <div class="dropdown-menu">
-						      <a class="dropdown-item" href="Login">Login</a>
+						      <a class="dropdown-item" href="Login">Accedi</a>
 						      <div class="dropdown-divider"></div>
 						      <a class="dropdown-item" href="Signin">Registrati</a>
 						    </div>

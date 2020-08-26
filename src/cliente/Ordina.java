@@ -53,7 +53,7 @@ public class Ordina extends ClienteHome {
 				// e aggiunge le ordinazioni effettuate dal cliente, in modo che risultino nel bar/ristorante.
 				DBMS.inserisciOrdinazione(carrello, utente.getIdUtente(), tavolo);
 	
-				// Invia una mail di avvenuto pagamento degli ordini nel carrello al cliente.
+				// Invia una mail di avvenuta ordinazione dei prodotti nel carrello.
 				DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy' alle ore 'HH:mm");
 		        String now=LocalDateTime.now().format(formatter);
 				String messaggio = "<h1>Ordine avvenuto con successo!</h1> <p>Gentile " + utente.getNome()

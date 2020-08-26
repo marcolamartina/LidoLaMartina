@@ -24,7 +24,7 @@ function aggiornaMappa(){
     $.ajax({
         url: "SpiaggiaMappa",
         method: "post",
-        async:false,
+
         data: {data: $("#date").val()},
         success: function(data) {
             setPostazioni(data);
@@ -53,7 +53,7 @@ function setPostazioni(data){
     for(var i=0; i<data.length; i++){
         sdraio+=parseInt(data[i].sdraio);
         if(data[i].numero!==0){
-            if(data[i].occupata===0){
+            if(data[i].occupata===true){
                 colore="red";
             }else{
                 colore="yellow";
@@ -72,7 +72,7 @@ function richiediPostazioni() {
     $.ajax({
         url: "SpiaggiaMappa",
         method: "post",
-        async:false,
+
         data: {postazioni: "true"},
         success: function(data) {
             mostraMappa(data);
@@ -101,12 +101,12 @@ function mostraMappa(data) {
         $("#mappaLido").append(content);
     }
     var mare='<div style=" background-color: lightskyblue; grid-row: 1; grid-column: 1 / span '+max_y+';"><small>MARE</small></div>';
-    var battigia='<div style=" background-color: sandybrown; grid-row: 2; grid-column: 1 / span '+max_y+';"><small>BATTIGIA</small></div>';
-    var cabine='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 1 / span 8;"><small>CABINE</small></div>';
-    var wc='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 9 / span 2;"><small>WC</small></div>';
-    var bar='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 11 / span 9; "><small>BAR</small></div>';
-    var pedana='<div style="background-color: palegreen; grid-row: '+(max_x)+'/ span 3; grid-column: 11 / span 9; "><small>PEDANA</small></div>';
-    var ingresso='<div style="background-color: palegreen; grid-row: '+(max_x+3)+'; grid-column: 20 / span 8; "><small>INGRESSO</small></div>';
+    var battigia='<div style=" background-color: #F2D16B; grid-row: 2; grid-column: 1 / span '+max_y+';"><small>BATTIGIA</small></div>';
+    var cabine='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 1 / span 8;"><small>CABINE</small></div>';
+    var wc='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 9 / span 2;"><small>WC</small></div>';
+    var bar='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 11 / span 9; "><small>BAR</small></div>';
+    var pedana='<div style="background-color: #B07840; grid-row: '+(max_x)+'/ span 3; grid-column: 11 / span 9; "><small>PEDANA</small></div>';
+    var ingresso='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 20 / span 8; "><small>INGRESSO</small></div>';
     $("#mappaLido").append(mare);
     $("#mappaLido").append(battigia);
     $("#mappaLido").append(cabine);

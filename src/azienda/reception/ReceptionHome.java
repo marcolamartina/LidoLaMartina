@@ -1,6 +1,7 @@
 package azienda.reception;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,7 +21,7 @@ import utils.Mailer;
 
 
 /**
- * Questa servlet intercetta le richieste relative alla pagina di home del cassiere.
+ * Questa servlet intercetta le richieste relative alla pagina di home del personale della reception.
  * @author Marco La Martina
  */
 @WebServlet({ "/ReceptionHome", "/receptionhome"})
@@ -44,7 +45,28 @@ public class ReceptionHome extends HttpServlet {
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        try {
+            if(request.getParameter("data")!=null){
+                LocalDate data=LocalDate.parse(request.getParameter("data"));
+                response.setContentType("application/json");
+                response.getWriter().println(DBMS.getPrenotazioniReception(data));
+                return;
+            } else if(request.getParameter("prenotazione")!=null && request.getParameter("occupata")!=null){
+                boolean occupata=Boolean.parseBoolean(request.getParameter("occupata"));
+                int IDPrenotazione=Integer.parseInt(request.getParameter("prenotazione"));
+                Account account=(Account)request.getSession().getAttribute("account");
+                Utente utente=account.getUtente();
+                if(!DBMS.setOccupata(IDPrenotazione, occupata, utente.getIdUtente()))response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
     }
 
 

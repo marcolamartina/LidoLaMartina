@@ -94,7 +94,7 @@ function libera(idprenotazione, idutente){
 		url: "LiberaPostazione",
 		method: "post",
 		data: {idprenotazione: idprenotazione},
-		success: function(data) {
+		success: function() {
 			$("#modalSucc").modal();
 			$("#row"+idprenotazione).remove();
 			if($("#bodySpiaggia"+idutente).html().length == 0){

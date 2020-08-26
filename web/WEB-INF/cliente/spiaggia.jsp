@@ -36,8 +36,8 @@
 
     <div class="jumbotron">
         <h1>Spiaggia</h1>
-        <p>Prenota le tue postazioni o delle sdraio singole. Seleziona le postazioni che desideri, comprensive ciascuna di un ombrellone e due sdraio. Possiamo anche aggiungere altre sdraio da mettere vicino la postazione, nei limiti dello spazio a disposizione, o in battigia. </p>
-        <p>Le prenotazioni effettuate saranno presenti nella sezione Prenotazioni del menu Account</p>
+        <p>Prenota le tue postazioni o delle sdraio singole. Seleziona nella mappa le postazioni che desideri, comprensive ciascuna di un ombrellone e due sdraio. Puoi anche prenotare delle sdraio da mettere in battigia o da aggiungere vicino la postazione, nei limiti dello spazio a disposizione. Appena hai scelto cosa prenotare clicca su <i>"Conferma"</i></p>
+        <p>Le prenotazioni effettuate saranno presenti nella sezione <i>Prenotazioni</i> del menu <i>Account</i></p>
     </div>
 
 

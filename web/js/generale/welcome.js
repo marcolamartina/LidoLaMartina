@@ -13,7 +13,6 @@ function creaProdotti(){
 		url: "VisualizzaProdotti",
 		method: "post",
 		data: {prodotti: "true"},
-		async: false,
 		success: function(data) {
 			parsingProdotti(data);
 			},

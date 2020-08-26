@@ -18,7 +18,7 @@ import utils.Mailer;
  * Questa servlet intercetta le richieste relative alla registrazione.
  * @author Marco La Martina
  */
-@WebServlet("/Signin")
+@WebServlet({"/Signin", "/signin"})
 public class Signin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -86,7 +86,7 @@ public class Signin extends HttpServlet {
 			response.sendRedirect(request.getContextPath());
 		}
 	}
-	
+
 	/**
 	 * Verifica che i dati inseriti dall'utente in fase di registrazione non siano nulli e rispettino
 	 * il formato richiesto.
@@ -95,37 +95,35 @@ public class Signin extends HttpServlet {
 	 * @param email
 	 * @param password
 	 * @param confPassword
-	 * @return errore
 	 */
 	public static String verificaDatiRegistrazione(String nome, String cognome, String email, String password, String confPassword, String cellulare) {
-		String errore = null;
-		
+
 		if(nome == null || cognome == null || email == null || password == null || confPassword == null || cellulare == null) {
-			return errore = "I campi sono tutti richiesti.";
+			return "I campi sono tutti richiesti.";
 		}
-		
-		if(nome.replaceAll("\\s+","").contentEquals("") || cellulare.replaceAll("\\s+","").contentEquals("") || cognome.replaceAll("\\s+","").contentEquals("") || 
+
+		if(nome.replaceAll("\\s+","").contentEquals("") || cellulare.replaceAll("\\s+","").contentEquals("") || cognome.replaceAll("\\s+","").contentEquals("") ||
 				email.replaceAll("\\s+","").contentEquals("") || password.replaceAll("\\s+","").contentEquals(""))
-			return errore = "I campi sono tutti richiesti.";
-		
+			return "I campi sono tutti richiesti.";
+
 		String regex = "^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$";
 		if(!nome.matches(regex))
-			return errore = "Il nome non rispetta il formato richiesto.";
-		
+			return "Il nome non rispetta il formato richiesto.";
+
 		if(!cognome.matches(regex))
-			return errore ="Il cognome non rispetta il formato richiesto.";
-		
+			return "Il cognome non rispetta il formato richiesto.";
+
 		regex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$";
 		if(!email.matches(regex))
-			return errore = "L'email non rispetta il formato richiesto.";
-		
+			return "L'email non rispetta il formato richiesto.";
+
 		regex = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}";
 		if(!password.matches(regex))
-			return errore = "La password non rispetta il formato richiesto.";
-		
+			return "La password non rispetta il formato richiesto.";
+
 		if(!password.equals(confPassword))
-			return errore ="Le password non corrispondono.";
-		
-		return errore;
+			return "Le password non corrispondono.";
+
+		return null;
 	}
 }

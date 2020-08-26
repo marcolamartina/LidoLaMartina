@@ -34,6 +34,14 @@ response.setDateHeader ("Expires", 0); %>
 		<h1>Ciao ${account.utente.nome}!</h1>
 		<p>Da questa sezione potrai inserire, modificare ed eliminare gli account aziendali.</p>
 	</div>
+
+	<!-- Pannello "Buttons" -->
+	<div>
+		<a href="AdminHome" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-home"></i> Home</button></a>
+		<a href="AggiungiRuolo" ><button type="submit" class="btn btn-primary" name="commit"><i class="fa fa-plus"></i> Nuovo account aziendale</button></a>
+		<br />
+		<br />
+	</div>
 	
 	<div>
 		<h2 id="nessunAccount" style="display:none">Non hai ancora registrato nessun account aziendale</h2>
@@ -54,11 +62,7 @@ response.setDateHeader ("Expires", 0); %>
 	  			</table>
 			</div>
 			
-        	<div >
-        		<label for="plusButton">Aggiungi un nuovo account aziendale: </label>
-        		<a href="AggiungiRuolo"><button id="plusButton" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></button></a>
-        		
-        	</div>
+
         	<br />
 	        <div class="table-responsive-sm ">
 	  			<table id="tabella" class="table table-hover table-sm">

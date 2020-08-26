@@ -51,6 +51,8 @@ response.setDateHeader ("Expires", 0); %>
 		</thead>
 		<tbody id="spiaggiaTableBody">
 		</tbody>
+		<div id="modals">
+		</div>
 	</table>
 
 </div>

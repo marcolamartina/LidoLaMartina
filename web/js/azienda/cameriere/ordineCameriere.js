@@ -76,7 +76,7 @@ function mostraAccount(data){
 	for(var i=0; i<data.length; i++){
 		var utente=data[i];
 		var radio='<div class="form-check">'
-				+ '<input name="'+utente.idutente+'" type="radio" id="radio'+utente.idutente+'">'
+				+ '<input name="opt" value="'+utente.idutente+'" type="radio" id="radio'+utente.idutente+'">'
 				+ '<label for="radio'+utente.idutente+'"> '+utente.nome+' '+utente.cognome+' <small>('+utente.email+')</small></label>'
 				+ '</div>';
 		$("#containerRisultati").append(radio);
@@ -189,7 +189,7 @@ function addToChart(i){
 		data: {idprodotto: i,
 				quantity : $("#sel"+i).val(),
 				note : $("#note"+i).val(),
-				idutente: $("#containerRisultati input[type='radio']:checked").attr("name")},
+				idutente: $("#containerRisultati input[type='radio']:checked").attr("value")},
 		success: function() {
 			$("#modalSucc").modal();
 		},
