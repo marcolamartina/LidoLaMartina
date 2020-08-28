@@ -67,12 +67,12 @@ response.setDateHeader ("Expires", 0); %>
 	<div style="display: inline-block">
 		<div class="imageContainer" style="float: left; width: 47.8%">
 			<a href="Spiaggia"><img class="img-fluid img-thumbnail image" src="img/spiaggia.svg" alt="spiaggia" title="Spiaggia"/></a>
-			<div class="overlay img-thumbnail">Spiaggia</div>
+			<a href="Spiaggia"><div class="overlay img-thumbnail">Spiaggia</div></a>
 		</div>
 
 		<div class="imageContainer" style="float: right; width: 52.2%">
 			<a href="FoodDrink"><img class="img-fluid img-thumbnail image" src="img/food.svg" alt="food_drink" title="Food&Drink"/></a>
-			<div class="overlay img-thumbnail">Food & Drink</div>
+			<a href="FoodDrink"><div class="overlay img-thumbnail">Food & Drink</div></a>
 		</div>
 
 	</div>

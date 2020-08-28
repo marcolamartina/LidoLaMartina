@@ -97,7 +97,7 @@ function setPostazioni(data){
             button_postazione=button+numero+'</button>';
         }
         if($("#rowSpiaggia"+data[i].idutente).length===0){
-            var riga='<tr id="rowSpiaggia'+data[i].idutente+'"><td><button id="info'+data[i].idutente+'" class="btn btn-link" onclick=\'getInfo("'+data[i].idutente+'","'+data[i].nome+'","'+data[i].cognome+'","'+data[i].email+'","'+data[i].cellulare+'")\'>'+data[i].nome+' '+data[i].cognome+'</td><td class="sdraioCol">'+num_sdraio+'</td><td class="postazioneCol">'+button_postazione+'</td></tr>';
+            var riga='<tr id="rowSpiaggia'+data[i].idutente+'"><td><button style="padding: 0" id="info'+data[i].idutente+'" class="btn btn-link btn-sm" onclick=\'getInfo("'+data[i].idutente+'","'+data[i].nome+'","'+data[i].cognome+'","'+data[i].email+'","'+data[i].cellulare+'")\'>'+data[i].nome+' '+data[i].cognome+'</td><td class="sdraioCol">'+num_sdraio+'</td><td class="postazioneCol">'+button_postazione+'</td></tr>';
             $("#spiaggiaTableBody").append(riga);
         } else {
             if(numero!=="")$("#rowSpiaggia"+data[i].idutente+" .postazioneCol").append(" "+button_postazione);
@@ -213,6 +213,8 @@ function mostraMappa(data) {
     var bar='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 11 / span 9; "><small>BAR</small></div>';
     var pedana='<div style="background-color: #B07840; grid-row: '+(max_x)+'/ span 3; grid-column: 11 / span 9; "><small>PEDANA</small></div>';
     var ingresso='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 20 / span 8; "><small>INGRESSO</small></div>';
+    var corridoio='<div style="background-color: #B07840; grid-row: 4 / span 3; grid-column: 15 ; "><i class="fas fa-long-arrow-alt-up"></i></div>';
+    var torretta='<div style="background-color: firebrick; grid-row: 3 ; grid-column: 15 ; "><i class="far fa-life-ring"></i></div>';
     $("#mappaLido").append(mare);
     $("#mappaLido").append(battigia);
     $("#mappaLido").append(cabine);
@@ -220,6 +222,8 @@ function mostraMappa(data) {
     $("#mappaLido").append(bar);
     $("#mappaLido").append(pedana);
     $("#mappaLido").append(ingresso);
+    $("#mappaLido").append(corridoio);
+    $("#mappaLido").append(torretta);
 }
 
 /**

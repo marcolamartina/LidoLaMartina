@@ -38,7 +38,11 @@
 
     <!-- Pannello "Prenotazioni" -->
     <div id="prenotazioni">
-        <h2 id="prenotazioniVuote" style="display:none">Non hai ancora effettuato nessuna prenotazione</h2>
+        <h2 id="prenotazioniVuote" style="display:none">Non hai ancora effettuato nessuna prenotazione.<br />
+            Seleziona "Prenota" per effettuare una nuova prenotazione.
+        </h2>
+        <br />
+        <a href="Spiaggia"><button style="display:none" class="btn btn-primary" id="prenotaButton">Prenota</button></a>
         <br />
     </div>
 

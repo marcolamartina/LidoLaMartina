@@ -1,9 +1,7 @@
 package azienda.reception;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import database.DBMS;
+import model.Account;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,11 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import database.DBMS;
-import model.Account;
-import model.Utente;
-import utils.Mailer;
+import java.io.IOException;
+import java.time.LocalDate;
 
 
 
@@ -54,9 +49,7 @@ public class ReceptionHome extends HttpServlet {
             } else if(request.getParameter("prenotazione")!=null && request.getParameter("occupata")!=null){
                 boolean occupata=Boolean.parseBoolean(request.getParameter("occupata"));
                 int IDPrenotazione=Integer.parseInt(request.getParameter("prenotazione"));
-                Account account=(Account)request.getSession().getAttribute("account");
-                Utente utente=account.getUtente();
-                if(!DBMS.setOccupata(IDPrenotazione, occupata, utente.getIdUtente()))response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                if(!DBMS.setOccupata(IDPrenotazione, occupata))response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

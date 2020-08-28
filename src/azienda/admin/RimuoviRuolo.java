@@ -1,15 +1,13 @@
 package azienda.admin;
 
-import java.io.IOException;
-
+import database.DBMS;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import database.DBMS;
+import java.io.IOException;
 
 /**
  * Questa servlet intercetta le richieste relative alla rimozione di un ruolo da parte dell'admin.

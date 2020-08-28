@@ -138,6 +138,8 @@ function mostraMappa(data) {
     var bar='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 11 / span 9; "><small>BAR</small></div>';
     var pedana='<div style="background-color: #B07840; grid-row: '+(max_x)+'/ span 3; grid-column: 11 / span 9; "><small>PEDANA</small></div>';
     var ingresso='<div style="background-color: #B07840; grid-row: '+(max_x+3)+'; grid-column: 20 / span 8; "><small>INGRESSO</small></div>';
+    var corridoio='<div style="background-color: #B07840; grid-row: 4 / span 3; grid-column: 15 ; "><i class="fas fa-long-arrow-alt-up"></i></div>';
+    var torretta='<div style="background-color: firebrick; grid-row: 3 ; grid-column: 15 ; "><i class="far fa-life-ring"></i></div>';
     $("#mappaLido").append(mare);
     $("#mappaLido").append(battigia);
     $("#mappaLido").append(cabine);
@@ -145,6 +147,8 @@ function mostraMappa(data) {
     $("#mappaLido").append(bar);
     $("#mappaLido").append(pedana);
     $("#mappaLido").append(ingresso);
+    $("#mappaLido").append(corridoio);
+    $("#mappaLido").append(torretta);
 }
 
 /**

@@ -1,7 +1,8 @@
 package generale;
 
-import java.io.IOException;
-
+import database.DBMS;
+import model.Notify;
+import utils.Mailer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,10 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import database.DBMS;
-import model.Notify;
-import utils.Mailer;
+import java.io.IOException;
 
 /**
  * Questa servlet intercetta le richieste relative alla registrazione.

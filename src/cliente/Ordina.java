@@ -1,21 +1,19 @@
 package cliente;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+import database.DBMS;
+import model.Account;
+import model.Notify;
+import model.Utente;
+import utils.Mailer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import database.DBMS;
-import utils.Mailer;
-import model.Account;
-import model.Notify;
-import model.Utente;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 

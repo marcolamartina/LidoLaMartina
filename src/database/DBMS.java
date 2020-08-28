@@ -1197,7 +1197,7 @@ public class DBMS {
 	public static JSONArray getPrenotazioniUtente(int IDUtente) throws SQLException{
 		JSONArray prenotazioni;
 		Date data=Date.valueOf(LocalDate.now().toString());
-		String query = "SELECT IDPrenotazione, Sdraio, Prezzo, Data, Prenotazione.Conto_IDConto AS IDConto, Postazione_Numero AS Numero FROM Prenotazione WHERE Prenotazione.Utente_IDUtente=? AND Data>=? AND Liberata=false AND Occupata=false";
+		String query = "SELECT IDPrenotazione, Sdraio, Prezzo, Prenotazione.Data, IDConto, Postazione_Numero AS Numero FROM Prenotazione JOIN Conto on Prenotazione.Conto_IDConto = Conto.IDConto WHERE Prenotazione.Utente_IDUtente=? AND Prenotazione.Data>=? AND Liberata=false AND Occupata=false AND Pagato=false";
 		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
 			statement.setInt(1, IDUtente);
@@ -1248,18 +1248,16 @@ public class DBMS {
 	 * Imposta il flag occupata della prenotazione specificata tramite ID e ritorna un boolean che indica la corretta esecuzione dell'operazione
 	 * @param IDPrenotazione
 	 * @param occupata
-	 * @param IDUtente
 	 * @throws SQLException
 	 */
-	public static boolean setOccupata(int IDPrenotazione, boolean occupata, int IDUtente) throws SQLException{
+	public static boolean setOccupata(int IDPrenotazione, boolean occupata) throws SQLException{
 		Date data=Date.valueOf(LocalDate.now().toString());
-		String query = "UPDATE Prenotazione SET Occupata = ? WHERE IDPrenotazione = ? AND Data=? AND Utente_IDUtente=?";
+		String query = "UPDATE Prenotazione SET Occupata = ? WHERE IDPrenotazione = ? AND Data=? ";
 		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
 			statement.setBoolean(1, occupata);
 			statement.setInt(2, IDPrenotazione);
 			statement.setDate(3, data);
-			statement.setInt(4, IDUtente);
 			int result = statement.executeUpdate();
 			return result > 0;
 		}

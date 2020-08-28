@@ -31,6 +31,7 @@ function mostraPrenotazioni(data) {
     if(data.length === 0 ) {
         $("#accordion").hide();
         $("#prenotazioniVuote").show();
+        $("#prenotaButton").show();
         return;
     }
     $("#prenotazioni").append('<div id="accordion"></div>');
@@ -112,6 +113,8 @@ function rimuoviPrenotazione() {
             $("#accordion:empty").remove();
             if($("#accordion").length == 0){
                 $("#prenotazioniVuote").show();
+                $("#prenotaButton").show();
+
             }
 
         },

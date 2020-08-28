@@ -55,7 +55,7 @@
 	    		</div>
 	    		<div class="form-group">        
 	      			<div class="col-sm-offset-2 col-sm-10">
-	        			<button type="submit" class="btn btn-primary" name="commit">Submit</button>
+	        			<button type="submit" class="btn btn-primary" name="commit">Conferma</button>
 	      			</div>
 	    		</div>
 	  		</form>

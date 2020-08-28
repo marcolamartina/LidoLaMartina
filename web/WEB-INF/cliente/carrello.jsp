@@ -35,10 +35,10 @@ response.setDateHeader ("Expires", 0); %>
 	<!-- Pannello "Carrello" -->
        <div>
        		<h2 id="carrelloVuoto" style="display:none">
-            Non ci sono ordini nel tuo carrello.<br>
+            Non ci sono ordini nel tuo carrello.<br />
             Seleziona "Ordina" per aggiungere i prodotti che desideri acquistare.
             </h2>
-            <a href="FoodDrink" id="ordinaButton"><button class="btn btn-primary" id="ordinaButton">Ordina</button></a> 
+            <a href="FoodDrink"><button class="btn btn-primary" id="ordinaButton">Ordina</button></a>
             <br />
             <div id="contenutoCarrello">
              	<table class="table table-sm table-borderless" id="tabella">

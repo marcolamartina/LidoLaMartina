@@ -1,11 +1,8 @@
 package model;
 
-import java.util.Map;
-
-import model.Prodotto;
-
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Classe che contiene i prodotti che il cliente desidera ordinare (il carrello degli ordini).

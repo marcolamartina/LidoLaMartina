@@ -68,19 +68,21 @@
     <!-- Pannello "Cerca" -->
     <input class="form-control" id="search" type="text" placeholder="Cerca..">
     <br />
-    <table id="spiaggiaTable" class="table table-borderless">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Sdraio</th>
-            <th>Postazioni</th>
-        </tr>
-        </thead>
-        <tbody id="spiaggiaTableBody">
-        </tbody>
-        <div id="modals">
-        </div>
-    </table>
+    <div class="table-responsive">
+        <table id="spiaggiaTable" class="table table-borderless">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Sdraio</th>
+                    <th>Postazioni</th>
+                </tr>
+            </thead>
+            <tbody id="spiaggiaTableBody">
+            </tbody>
+        </table>
+    </div>
+    <div id="modals">
+    </div>
 
 </div>
 <%@ include file="/WEB-INF/utils/footer.jsp"%>

@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="LidoLaMartina">
+    <output-path>$PROJECT_DIR$/out/artifacts/LidoLaMartina</output-path>
+    <root id="archive" name="LidoLaMartina.war">
+      <element id="artifact" artifact-name="web:war exploded" />
+      <element id="directory" name="src">
+        <element id="dir-copy" path="$PROJECT_DIR$/src" />
+      </element>
+    </root>
+  </artifact>
+</component>

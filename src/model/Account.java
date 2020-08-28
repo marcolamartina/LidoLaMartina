@@ -1,8 +1,8 @@
 package model;
 
-import java.util.Map;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Classe che contiene i dati di un account.

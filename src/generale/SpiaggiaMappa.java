@@ -3,7 +3,6 @@ package generale;
 import azienda.cameriere.CameriereHome;
 import database.DBMS;
 
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

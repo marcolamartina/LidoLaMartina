@@ -27,7 +27,7 @@ public class Mailer implements Runnable {
 	private String indirizzoDestinazione;
 	private String oggetto;
 	private String messaggio;
-	private static String address="http://marcolamartina.duckdns.org";
+	private static String address="http://localhost:8080";
 	private static String indirizzoEmail="lidogorgobeach@gmail.com";
 	private static String cellulare="3272294014";
 	
