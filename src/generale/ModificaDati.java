@@ -76,7 +76,11 @@ public class ModificaDati extends HttpServlet {
 				flag=1;
 			}
 			if (email.compareTo(utente.getEmail())!=0) {
-				DBMS.aggiornaEmail(utente.getIdUtente(), email);
+				if(!DBMS.aggiornaEmail(utente.getIdUtente(), email)){
+					request.getSession().setAttribute("notify",new Notify(2,"Errore","L'indirizzo email inserito è già utilizzato"));
+					response.sendRedirect(request.getContextPath()+"/ModificaDati");
+					return;
+				}
 				flag=1;
 				Mailer mailer = new Mailer( utente.getEmail(), "Lido Gorgo Beach - Modifica dati", messaggio);
 				Thread thread = new Thread(mailer);

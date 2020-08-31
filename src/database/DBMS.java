@@ -180,13 +180,16 @@ public class DBMS {
 	 * @param IDUtente
 	 * @param email
 	 */
-	public static void aggiornaEmail(int IDUtente, String email) throws SQLException{
+	public static boolean aggiornaEmail(int IDUtente, String email) throws SQLException{
 		String query = "UPDATE Utente SET Email=? WHERE IDUtente=?";
 		try(Connection connection=dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
 			statement.setString(1, email);
 			statement.setInt(2, IDUtente);
-			statement.executeUpdate();
+			int result=statement.executeUpdate();
+			return result>0;
+		}catch (SQLIntegrityConstraintViolationException e ){
+			return false;
 		}
 			
 	}
