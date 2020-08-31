@@ -75,8 +75,8 @@ public class Spiaggia extends ClienteHome {
 
                     String now= LocalDateTime.now().format(formatter);
                     String messaggio = "<h1>Prenotazione registrata con successo!</h1> <p>Gentile " + utente.getNome()
-                            + " " + utente.getCognome() + ", <br>grazie per la tua prenotazione. Abbiamo ricevuto il pagamento"
-                            + " relativo alla prenotazione di una postazione in data " + now + ". <br>Qui"
+                            + " " + utente.getCognome() + ", <br>grazie per la tua prenotazione. Abbiamo ricevuto una richiesta"
+                            + " di prenotazione di una postazione in data " + now + ". <br>Qui"
                             + " di seguito riportiamo i dettagli della prenotazione, visibili anche selezionando l'opzione \"Account"
                             + " -> Prenotazioni\" nel nostro sito.</p><h2>Dettagli prenotazione:</h2><p>"
                             + " Data prenotazione: " + data.format(formatter_data) + "<br><hr style='width:40%; float:left'></hr>";
@@ -99,6 +99,10 @@ public class Spiaggia extends ClienteHome {
                 }
                 request.getSession().setAttribute("notify",new Notify(2,"Errore","Abbiamo riscontrato un errore"));
                 response.sendRedirect(request.getContextPath());
+                return;
+            } catch(RuntimeException e) {
+                request.getSession().setAttribute("notify",new Notify(0,"Informazione","Per la data selezionata il nostro lido è chiuso"));
+                response.sendRedirect(request.getContextPath()+"/Spiaggia");
                 return;
             } catch(Exception e) {
                 e.printStackTrace();

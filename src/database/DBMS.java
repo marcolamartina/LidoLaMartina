@@ -1062,7 +1062,8 @@ public class DBMS {
 	 * @param IDUtente
 	 * @param prezzo
 	 */
-	public static boolean prenotaSdraio(int sdraio, LocalDate date, int IDUtente, double prezzo) throws SQLException{
+	public static boolean prenotaSdraio(int sdraio, LocalDate date, int IDUtente, double prezzo) throws SQLException, RuntimeException{
+		if(date.getMonthValue()<6 || date.getMonthValue()>9)throw new RuntimeException();
 		int IDConto=0;
 		Date data=Date.valueOf(date.toString());
 
@@ -1129,8 +1130,8 @@ public class DBMS {
 	 * @param IDUtente
 	 * @param prezzo
 	 */
-	public static boolean prenotaPostazione(int numero, LocalDate date, int IDUtente, double prezzo) throws SQLException{
-
+	public static boolean prenotaPostazione(int numero, LocalDate date, int IDUtente, double prezzo) throws SQLException, RuntimeException{
+		if(date.getMonthValue()<6 || date.getMonthValue()>9)throw new RuntimeException();
 		int IDConto=0;
 		Date data=Date.valueOf(date.toString());
 
