@@ -101,7 +101,7 @@ public class Spiaggia extends ClienteHome {
                 response.sendRedirect(request.getContextPath());
                 return;
             } catch(RuntimeException e) {
-                request.getSession().setAttribute("notify",new Notify(0,"Informazione","Per la data selezionata il nostro lido è chiuso"));
+                request.getSession().setAttribute("notify",new Notify(0,"Informazione",e.getMessage()));
                 response.sendRedirect(request.getContextPath()+"/Spiaggia");
                 return;
             } catch(Exception e) {

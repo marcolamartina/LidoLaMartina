@@ -1063,9 +1063,11 @@ public class DBMS {
 	 * @param prezzo
 	 */
 	public static boolean prenotaSdraio(int sdraio, LocalDate date, int IDUtente, double prezzo) throws SQLException, RuntimeException{
-		if(date.getMonthValue()<6 || date.getMonthValue()>9)throw new RuntimeException();
+		if(date.getMonthValue()<6 || date.getMonthValue()>9)throw new RuntimeException("Per la data selezionata il nostro lido è chiuso");
+		if(date.isBefore(LocalDate.now()))throw new RuntimeException("Non è possibile prenotare per una data passata");
 		int IDConto=0;
 		Date data=Date.valueOf(date.toString());
+
 
 		//Verifica che ci siano ancora sdraio disponibili per la data selezionata
 		String query = "SELECT SUM(Sdraio) AS sdraioOccupate FROM Prenotazione WHERE Data=? AND Liberata=false";
@@ -1131,7 +1133,8 @@ public class DBMS {
 	 * @param prezzo
 	 */
 	public static boolean prenotaPostazione(int numero, LocalDate date, int IDUtente, double prezzo) throws SQLException, RuntimeException{
-		if(date.getMonthValue()<6 || date.getMonthValue()>9)throw new RuntimeException();
+		if(date.getMonthValue()<6 || date.getMonthValue()>9)throw new RuntimeException("Per la data selezionata il nostro lido è chiuso");
+		if(date.isBefore(LocalDate.now()))throw new RuntimeException("Non è possibile prenotare per una data passata");
 		int IDConto=0;
 		Date data=Date.valueOf(date.toString());
 
