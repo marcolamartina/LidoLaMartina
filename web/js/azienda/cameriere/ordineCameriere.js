@@ -161,15 +161,16 @@ function creaProdotti(){
 function parsingProdotti(arr) { 
 	var i;
 	var j;
+	var s="";
+	for(j=1; j<=20; j++){
+		s+='<option>'+j+'</option>';
+	}
+	s+='</select></td>';
 	$("#selCategoria").html('<option value="Tutto">Tutto</option>');
 	for(i = 0; i < arr.length; i++) {
 		var categoria=arr[i].categoria;
-		var quantitySelector='<td class="col-sm-1"><select class="form-control form-control-sm" style="width:auto;" id="sel'+arr[i].idprodotto+'">';
+		var quantitySelector='<td class="col-sm-1"><select class="form-control form-control-sm" style="width:auto;" id="sel'+arr[i].idprodotto+'">'+s;
 		var prezzo=parseFloat(arr[i].prezzo).toFixed(2);
-		for(j=1; j<=20; j++){
-			quantitySelector+='<option>'+j+'</option>';
-		}
-		quantitySelector+='</select></td>';
 		
 		var note='<td colspan="5"><textarea class="form-control" id="note'+arr[i].idprodotto+'" placeholder="Note" maxlength="100"></textarea></td>';
 		var button='<td class="col-sm-1"><button class="btn btn-primary btn-sm" onclick="addToChart('+arr[i].idprodotto+')"><i class="fa fa-plus"></i></button></td>';

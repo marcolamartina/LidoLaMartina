@@ -61,7 +61,7 @@ function mostraCarrello(data) {
 			var note='<td colspan="6"><textarea  class="form-control" id="note'+data[i].idprodotto+'" placeholder="Note" maxlength="100">'+textnote+'</textarea></td>';
 			var quantitySelector='<td class="col-sm-1"><select class="form-control form-control-sm" style="width:auto;" id="sel'+data[i].idprodotto+'" onchange="changeQuantity('+data[i].idprodotto+')">';
 
-			for(j=1; j<=20; j++){
+			for(var j=1; j<=20; j++){
 				if(j==data[i].quantita){
 					quantitySelector+='<option selected>'+j+'</option>';
 				}else{

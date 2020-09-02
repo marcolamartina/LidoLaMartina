@@ -48,16 +48,8 @@ public class DBMS {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Inizia una connessione con il database.
-	 * @throws SQLException
-	 */
-	public static Connection connect() throws SQLException {
-		return dataSource.getConnection();
-	}
 
-	
+
 	
 	/**
 	 * Inserisce all'interno del database i dati del cliente che effettua la registrazione 
