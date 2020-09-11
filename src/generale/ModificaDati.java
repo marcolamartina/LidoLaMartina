@@ -128,7 +128,7 @@ public class ModificaDati extends HttpServlet {
 				email.replaceAll("\\s+","").contentEquals("") )
 			return "I campi sono tutti richiesti.";
 		
-		String regex = "^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$";
+		String regex = "^[A-Za-zèùàòéì][a-zA-Z'èùàòéì ]*$";
 		if(!nome.matches(regex))
 			return "Il nome non rispetta il formato richiesto.";
 		
