@@ -73,7 +73,7 @@ function validateEmail() {
  * Valida il nome
  */
 function validateName() {
-	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
+	var regex = new RegExp("^[A-Za-zèùàòéì][a-zA-Z'èùàòéì ]*$");
 	var messaggio = "Inserire un nome corretto";
 
 	
@@ -95,7 +95,7 @@ function validateName() {
  * Valida il cognome
  */
 function validateSurname() {
-	var regex = new RegExp("^[A-Za-zèùàòé][a-zA-Z'èùàòé ]*$");
+	var regex = new RegExp("^[A-Za-zèùàòéì][a-zA-Z'èùàòéì ]*$");
 	var messaggio = "Inserire un cognome corretto";
 
 	
