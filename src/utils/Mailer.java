@@ -28,8 +28,8 @@ public class Mailer implements Runnable {
 	private String oggetto;
 	private String messaggio;
 	private static String address="http://localhost:8080";
-	private static String indirizzoEmail="lidogorgobeach@gmail.com";
-	private static String cellulare="3272294014";
+	private static String indirizzoEmail="lido@gmail.com";
+	private static String cellulare="3270000000";
 	
 	/**
 	 * Construttore della classe.
@@ -39,7 +39,7 @@ public class Mailer implements Runnable {
 	 */
 	public Mailer (String indirizzoDestinazione, String oggetto, String messaggio) {
 		this.host = "smtp.gmail.com";
-		this.password = "gupzeg-jundI2-muczig";
+		this.password = "password";
 		this.indirizzoDestinazione = indirizzoDestinazione;
 		this.oggetto = oggetto;
 		this.messaggio = messaggio;
