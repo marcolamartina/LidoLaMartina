@@ -22,6 +22,7 @@ public class Mailer implements Runnable {
 	 * oggetto --> oggetto della mail
 	 * messaggio --> stringa html che contiene il corpo della mail
 	 */
+
 	private String host;
 	private String password;
 	private String indirizzoDestinazione;
